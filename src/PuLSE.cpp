@@ -1,4 +1,5 @@
-// Steven R Shave (stevenshave@gmail.com) - 16/10/2016
+// Steven R Shave (stevenshave@gmail.com) - 13/04/2017
+// PuLSE
 
 #include "PuLSE-RunData.hpp"
 #include "PuLSE-HTMLWriter.hpp"

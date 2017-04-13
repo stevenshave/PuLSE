@@ -330,27 +330,47 @@ private:
                            const std::string &subtitle,
                            const std::vector<std::string> &headings,
                            const std::vector<std::vector<std::string>> &data) {
-    auto getHexColor = [](const std::string &in) {
-      const float upperbound = 2.0f;
-      const float lowerbound = 0.0f;
-      const float maxstrength = 125.0f;
+
+    auto getIntensities = [](float val, unsigned int &r, unsigned int &g,
+                             unsigned int &b) {
+      constexpr float upperbound = 2.0f;
+      constexpr float lowerbound = 0.0f;
+	  r = 100; g = 100; b = 100;
+      unsigned dif;
+      if (val < 1.0f) {
+        val = (val < lowerbound ? 0.0f : val);
+        dif = static_cast<int>(val * 100);
+		r -= dif;
+		g -= dif; return;
+      } else {
+        val = (val > upperbound ? 2.0f : val);
+		dif = static_cast<int>((val - 1.0f) * 100);
+		g -= 100;
+		b -= 100;
+		return;
+      }
+	  return;
+    };
+
+    auto getHexColor = [&getIntensities](const std::string &in) {
+      unsigned int r, g, b;
       std::stringstream ss;
       std::string retval = "#000000";
       if (in.find(".") == std::string::npos) {
         return std::string("#FFFFFF");
       }
       float val = std::stof(in);
-      if (val <= 1.0) {
-        val = (val < lowerbound ? maxstrength
-                                : std::fma(-val, maxstrength, maxstrength));
-        ss << "#0000" << std::hex << static_cast<int>(val);
+      getIntensities(val, r, g, b);
+	  r = static_cast<float>((r / 100.0f)*255.0f);
+	  g = static_cast<float>((g / 100.0f)*255.0f);
+	  b = static_cast<float>((b / 100.0f)*255.0f);
+
+        ss << std::hex << static_cast<int>(r);
+		ss << std::hex << static_cast<int>(g);
+		ss << std::hex << static_cast<int>(b);
+
         retval = ss.str();
-      } else if (val > 1.0) {
-        val = (val >= upperbound ? maxstrength
-                                 : static_cast<float>(std::fma(val, maxstrength / upperbound, 1)));
-        ss << "#" << std::hex << static_cast<int>(val) << "0000";
-        retval = ss.str();
-      }
+      
       std::transform(retval.begin(), retval.end(), retval.begin(), toupper);
       return retval;
     };
