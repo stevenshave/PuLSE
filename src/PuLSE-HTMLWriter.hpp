@@ -237,10 +237,11 @@ public:
     for (unsigned i = 1; i <= rundata->dnalength / 3; ++i) {
       headings.push_back("Position #" + std::to_string(i));
     }
-    WriteHTMLTable(file, "Normalised protein residue heatmap",
-                   "Enrichment over expected occurance of each AA resdue at "
-                   "every library position",
-                   headings, normalisedProtHeatmap);
+    WriteNormalisedHTMLTable(
+        file, "Normalised protein residue heatmap",
+        "Enrichment over expected occurance of each AA resdue at "
+        "every library position",
+        headings, normalisedProtHeatmap);
 
     auto normalisedDNAHeatmap = rundata->dnaheatmap;
 
@@ -254,10 +255,11 @@ public:
     for (unsigned i = 1; i <= rundata->dnalength; ++i) {
       headings.push_back("Position #" + std::to_string(i));
     }
-    WriteHTMLTable(file, "Normalised DNA base heatmap",
-                   "Enrichment over expected occurance of each base at every "
-                   "library position",
-                   headings, normalisedDNAHeatmap);
+    WriteNormalisedHTMLTable(
+        file, "Normalised DNA base heatmap",
+        "Enrichment over expected occurance of each base at every "
+        "library position",
+        headings, normalisedDNAHeatmap);
   };
 
   ~PuLSEHTMLWriter() {
@@ -335,42 +337,57 @@ private:
                              unsigned int &b) {
       constexpr float upperbound = 2.0f;
       constexpr float lowerbound = 0.0f;
-	  r = 100; g = 100; b = 100;
+      r = 100;
+      g = 100;
+      b = 100;
       unsigned dif;
       if (val < 1.0f) {
         val = (val < lowerbound ? 0.0f : val);
-        dif = static_cast<int>(val * 100);
-		r -= dif;
-		g -= dif; return;
+        dif = 100 - (static_cast<int>(val * 100));
+        r -= dif;
+        g -= dif;
+        return;
       } else {
         val = (val > upperbound ? 2.0f : val);
-		dif = static_cast<int>((val - 1.0f) * 100);
-		g -= 100;
-		b -= 100;
-		return;
+        dif = static_cast<int>((val - 1.0f) * 100);
+        g -= dif;
+        b -= dif;
+        return;
       }
-	  return;
+      return;
     };
 
-    auto getHexColor = [&getIntensities](const std::string &in) {
+    auto getHexColour = [&getIntensities](const std::string &in) {
       unsigned int r, g, b;
       std::stringstream ss;
+      ss << "#";
       std::string retval = "#000000";
       if (in.find(".") == std::string::npos) {
         return std::string("#FFFFFF");
       }
       float val = std::stof(in);
       getIntensities(val, r, g, b);
-	  r = static_cast<float>((r / 100.0f)*255.0f);
-	  g = static_cast<float>((g / 100.0f)*255.0f);
-	  b = static_cast<float>((b / 100.0f)*255.0f);
-
+      r = static_cast<float>((r / 100.0f) * 255.0f);
+      g = static_cast<float>((g / 100.0f) * 255.0f);
+      b = static_cast<float>((b / 100.0f) * 255.0f);
+      if (r > 16) {
         ss << std::hex << static_cast<int>(r);
-		ss << std::hex << static_cast<int>(g);
-		ss << std::hex << static_cast<int>(b);
+      } else {
+        ss << "0" << std::hex << static_cast<int>(r);
+      }
+      if (g > 16) {
+        ss << std::hex << static_cast<int>(g);
+      } else {
+        ss << "0" << std::hex << static_cast<int>(g);
+      }
+      if (b > 16) {
+        ss << std::hex << static_cast<int>(b);
+      } else {
+        ss << "0" << std::hex << static_cast<int>(b);
+      }
 
-        retval = ss.str();
-      
+      retval = ss.str();
+
       std::transform(retval.begin(), retval.end(), retval.begin(), toupper);
       return retval;
     };
@@ -390,7 +407,7 @@ private:
     for (auto &&i : data) {
       out << "<tr>";
       for (auto &&j : i) {
-        out << "<td bgcolor=\"" << getHexColor(j) << "\">" << j << "</td>";
+        out << "<td bgcolor=\"" << getHexColour(j) << "\">" << j << "</td>";
       }
       out << "</tr>";
     }
