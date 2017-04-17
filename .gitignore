@@ -6,7 +6,6 @@ Makefile.in
 Makefile
 autom4te.cache/*
 config.status
-configure.ac
 configure.scan
 *.html
 ~AutoRecover*
