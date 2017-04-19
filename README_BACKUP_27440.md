@@ -1,6 +1,10 @@
 # PuLSE (Phage Library Sequence Evaluation)
 
+<<<<<<< HEAD
 ### Quality control and quantification of peptide sequences explored by phage display libraries.
+=======
+###Quality control and quantification of peptide sequences explored by phage display libraries.
+>>>>>>> ce3565be294fd97c5b4fabda7e5e5bfad1c3c66e
 
 ---
 
@@ -8,18 +12,30 @@ As the complexity of phage display libraries increases, the ability to screen al
 
 PuLSE is designed to read in fastq next generation sequencing data describing reads from a phage display library.  Output is positional base frequencies, as well as protein residue translation position counts and normalised frequencies.  Using this output it is easy to identify skewed libraries or positions greatly enriched for certain bases.  Output is in the form of an HTML formatted report.
 
+<<<<<<< HEAD
 ## Dependencies
+=======
+##Dependencies
+>>>>>>> ce3565be294fd97c5b4fabda7e5e5bfad1c3c66e
 
 ---
 
 - An HTML5 compatible webbrowser to view generated reports. (Tested with Google Chrome 57.0.2987.133 64-bit and Mozilla Firefox 52.0.2 64-bit).
 
+<<<<<<< HEAD
 #### To compile from source
+=======
+####To compile from source
+>>>>>>> ce3565be294fd97c5b4fabda7e5e5bfad1c3c66e
 
 - A C++14 (C++1y) compiler.  Pulse has been tested using GCC 5.4.0 and Clang 3.8.0.
 - To build from the Makefile, you must have GNU Make installed (tested with GNU Make 4.1)
 
+<<<<<<< HEAD
 ## Precompiled binaries
+=======
+##Precompiled binaries
+>>>>>>> ce3565be294fd97c5b4fabda7e5e5bfad1c3c66e
 
 ***
 
@@ -36,6 +52,7 @@ Precompiled binaries accompany the PuLSE distribtution package for:
 
 Precompiled binaries can be found in the 'binaries subfolder'
 
+<<<<<<< HEAD
 ## Compilation
 
 ---
@@ -45,6 +62,17 @@ Precompiled binaries can be found in the 'binaries subfolder'
 Microsoft Visual Studio 15 project and solution files are included in the PuLSE distribtution.  Alternatively, a C++14 capable compiler such as ICC or MinG can be used to compile the source code using the manual Linux compilation instructions below.
 
 #### Linux
+=======
+##Compilation
+
+---
+
+####Windows
+
+Microsoft Visual Studio 15 project and solution files are included in the PuLSE distribtution.  Alternatively, a C++14 capable compiler such as ICC or MinG can be used to compile the source code using the manual Linux compilation instructions below.
+
+####Linux
+>>>>>>> ce3565be294fd97c5b4fabda7e5e5bfad1c3c66e
 
 Pulse was developed and extensively tested on Ubuntu Linux 16.04, and as such is supplied with a configure script to build a makefile compatible with the target system.  To use the build system:
 
@@ -56,6 +84,7 @@ The final make install is not necessary if you would like to run PuLSE from the 
 
 Alternatively, you may manually compile PuLSE via:
 
+<<<<<<< HEAD
 ##### GCC
 
 >g++ -o pulse src/PuLSE.cpp  -Wall -O3 -std=c++1y
@@ -65,6 +94,17 @@ Alternatively, you may manually compile PuLSE via:
 >clang++ -o pulse src/PuLSE.cpp  -Wall -O3 -std=c++1y
 
 ## Usage
+=======
+#####GCC
+
+>g++ -o pulse src/PuLSE.cpp  -Wall -O3 -std=c++1y
+
+#####clang
+
+>clang++ -o pulse src/PuLSE.cpp  -Wall -O3 -std=c++1y
+
+##Usage
+>>>>>>> ce3565be294fd97c5b4fabda7e5e5bfad1c3c66e
 
 ---
 
@@ -72,6 +112,7 @@ If compiling from source, it is a good idea to first run PuLSE-test before runni
 
 `./profilePhageLibrary inFile.fastq libraryDefinition[triplet residue][...]`
 
+<<<<<<< HEAD
 #### inFile.fastq
 
 inFile.fastq is the data output from next generation sequencing of the phage library being profiled.
@@ -81,6 +122,17 @@ inFile.fastq is the data output from next generation sequencing of the phage lib
 libraryDefinition is a string of characters used by PuLSE to identify flanking DNA bases surrounding the randomised library position.  With both upstream and downstream matches made, the randomised sequence between these markers is considered a library member and included in profiling statistics.  The definition takes the form of first, DNA bases encoding the upstream forward marker, a number of X characters, and finally the downstream forward marker.  The definition is reversed and complimentary bases generated in order to deal with reverse library reads in the NGS data.  The full length of the specified (and reverse, complimentary) upstream marker is always used.  However, in the case of downstream markers, only the first 3 DNA bases are used.  The example data accompanying the PuLSE distribution uses 'CGTTGCXXXXXXXXXXXXXXXTGTGCT' as the library definition, specifying that the randomised sequence of 15 DNA bases (5 amino acids) as being flanked by CGTTGC and TGTGCT.
 
 #### [triplet residue]  (Optional parameter)
+=======
+####inFile.fastq
+
+inFile.fastq is the data output from next generation sequencing of the phage library being profiled.
+
+####libraryDefinition
+
+libraryDefinition is a string of characters used by PuLSE to identify flanking DNA bases surrounding the randomised library position.  With both upstream and downstream matches made, the randomised sequence between these markers is considered a library member and included in profiling statistics.  The definition takes the form of first, DNA bases encoding the upstream forward marker, a number of X characters, and finally the downstream forward marker.  The definition is reversed and complimentary bases generated in order to deal with reverse library reads in the NGS data.  The full length of the specified (and reverse, complimentary) upstream marker is always used.  However, in the case of downstream markers, only the first 3 DNA bases are used.  The example data accompanying the PuLSE distribution uses 'CGTTGCXXXXXXXXXXXXXXXTGTGCT' as the library definition, specifying that the randomised sequence of 15 DNA bases (5 amino acids) as being flanked by CGTTGC and TGTGCT.
+
+####[triplet residue]  (Optional parameter)
+>>>>>>> ce3565be294fd97c5b4fabda7e5e5bfad1c3c66e
 
 This optional parameter allows PuLSE to operate on non-standard DNA triplet to amino acid mappings.  By default, PuLSE uses the following mapping of DNA triplets to amino acid residue single letter codes:
 
@@ -92,7 +144,11 @@ A custom mapping may be inserted by first specifying the DNA triplet to be modif
 
 Note, that multiple changes may be made to the mappings, by continuing to specify mapping on the command line.
 
+<<<<<<< HEAD
 #### Example
+=======
+####Example
+>>>>>>> ce3565be294fd97c5b4fabda7e5e5bfad1c3c66e
 
 The PuLSE distribution is supplied with an example dataset, containing NGS data obtained from sequencing a cyclic 5-mer phage display library containing 5 randomised amino acid positions flanked by cystine residues an expressed in a system with nonsense surpression.  The PuLSE library definition for this library is as follows: CGTTGCXXXXXXXXXXXXXXXTGTGCT.  Nonsense surpression is in the form of the UAG triplet remapped to produce a glutamate residue (Q).
 
