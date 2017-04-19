@@ -35,7 +35,7 @@ Pre compiled binaries accompany the PuLSE distribution package for:
 |Windows 7|  64-bit|`a27b1e497caa4fab61728eb9ea67ce1459c8913d8c72d2e09168564812087547`|
 |Windows 7|  32-bit|`40347ce77e24a2097a537c4d9a03b0b9a72484e9cbb7a901a57d87f4eadbcc8b`|
 
-Pre compiled binaries can be found in the 'binaries sub folder'
+Pre compiled binaries can be found in the 'binaries sub folder'.  NOTE:  Windows binaries require the Visual C++ Redistributable for Visual Studio 2015 to be installed.  [Obtain MSVCP140.DLL - https://www.microsoft.com/en-gb/download/details.aspx?id=48145](https://www.microsoft.com/en-gb/download/details.aspx?id=48145) 
 
 ## Compilation
 
