@@ -4,7 +4,7 @@
 
 ---
 
-As the complexity of phage display libraries increases, the ability to screen all theoretical library members is lost. Quality control must therefore be carried out on DNA base occurance frequency derived from a subset of library reads taken from next generation sequencing.
+As the complexity of phage display libraries increases, the ability to screen all theoretical library members is lost. Quality control must therefore be carried out on DNA base occurrence frequency derived from a subset of library reads taken from next generation sequencing.
 
 PuLSE is designed to read in fastq next generation sequencing data describing reads from a phage display library.  Output is positional base frequencies, as well as protein residue translation position counts and normalised frequencies.  Using this output it is easy to identify skewed libraries or positions greatly enriched for certain bases.  Output is in the form of an HTML formatted report.
 
@@ -12,30 +12,30 @@ PuLSE is designed to read in fastq next generation sequencing data describing re
 
 ---
 
-- An HTML5 compatible webbrowser to view generated reports. (Tested with Google Chrome 57.0.2987.133 64-bit and Mozilla Firefox 52.0.2 64-bit).
-- To decompress the sample sequencing data, a means to decompress the xz data is required.  On linux this can be achieved with unxz and on windows 7-Zip.
+- An HTML5 compatible web browser to view generated reports. (Tested with Google Chrome 57.0.2987.133 64-bit and Mozilla Firefox 52.0.2 64-bit).
+- To decompress the sample sequencing data, a means to decompress the xz data is required.  On Linux this can be achieved with unxz and on windows 7-Zip.
 
 #### To compile from source
 
 - A C++14 (C++1y) compiler.  Pulse has been tested using GCC 5.4.0 and Clang 3.8.0.
 - To build from the Makefile, you must have GNU Make installed (tested with GNU Make 4.1)
 
-## Precompiled binaries
+## Pre compiled binaries
 
 ***
 
-Precompiled binaries accompany the PuLSE distribtution package for:
+Pre compiled binaries accompany the PuLSE distribution package for:
 
-- 64-bit linux (Ubuntu 16.04 and compatible).
+- 64-bit Linux (Ubuntu 16.04 and compatible).
 - 32 & 64-bit Windows 7 and compatible.
 
 |Platform|32/64 bit|Sha256 sum |
 |---:   |:---|:---|
-|Ububtu Linux 16.04|64-bit|`887f1badcbd6b57ddedeabe9749c9c87bb109768969c91a1b2b61b92c14ba982`|
-|Windows 7|  64-bit|`a786a247e25a9ca5047e877833d0c5b0bd8a9ad5cb9a1588c37ab9e79b16e606`|
-|Windows 7|  32-bit|`1d1c23bce23c150fe0d2d7c6cd58e8981cfcd57d5e5801f8744e6af2f1e74d15`|
+|Ubuntu Linux 16.04|64-bit|`dfcfe510228843b5fbfd2ccbddf820e5bf33e85a3734843abf0d4504fd39cc40`|
+|Windows 7|  64-bit|`a27b1e497caa4fab61728eb9ea67ce1459c8913d8c72d2e09168564812087547`|
+|Windows 7|  32-bit|`40347ce77e24a2097a537c4d9a03b0b9a72484e9cbb7a901a57d87f4eadbcc8b`|
 
-Precompiled binaries can be found in the 'binaries subfolder'
+Pre compiled binaries can be found in the 'binaries sub folder'
 
 ## Compilation
 
@@ -43,7 +43,7 @@ Precompiled binaries can be found in the 'binaries subfolder'
 
 #### Windows
 
-Microsoft Visual Studio 15 project and solution files are included in the PuLSE distribtution.  Alternatively, a C++14 capable compiler such as ICC or MinG can be used to compile the source code using the manual Linux compilation instructions below.
+Microsoft Visual Studio 15 project and solution files are included in the PuLSE distribution.  Alternatively, a C++14 capable compiler such as ICC or MinG can be used to compile the source code using the manual Linux compilation instructions below.
 
 #### Linux
 
@@ -53,7 +53,7 @@ Pulse was developed and extensively tested on Ubuntu Linux 16.04, and as such is
 	make
 	sudo make install
 	
-The final make install is not necessary if you would like to run PuLSE from the build directory, or relocate the executable youself.  Make install will copy the executable to /usr/local/bin/
+The final make install is not necessary if you would like to run PuLSE from the build directory, or relocate the executable yourself.  Make install will copy the executable to /usr/local/bin/
 
 Alternatively, you may manually compile PuLSE via:
 
@@ -71,7 +71,7 @@ Alternatively, you may manually compile PuLSE via:
 
 If compiling from source, it is a good idea to first run PuLSE-test before running PuLSE on your sequencing data.  This will ensure that the system is working properly. PuLSE is designed to be run on output from next generation sequencing in the fastq file format and can be invoked as follows:
 
-`./profilePhageLibrary inFile.fastq libraryDefinition[triplet residue][...]`
+`pulse inFile.fastq libraryDefinition[triplet residue][...]`
 
 #### inFile.fastq
 
@@ -87,7 +87,7 @@ This optional parameter allows PuLSE to operate on non-standard DNA triplet to a
 
 >UUU->F, UUC->F, UUA->L, UUG->L, CUU->L, CUC->L, CUA->L, CUG->L, AUU->I, AUC->I, AUA->I, AUG->M, GUU->V, GUC->V, GUA->V, GUG->V, UCU->S, UCC->S, UCA->S, UCG->S, AGU->S, AGC->S, CCU->P, CCC->P, CCA->P, CCG->P, ACU->T, ACC->T, ACA->T, ACG->T, GCU->A, GCC->A, GCA->A, GCG->A, UAU->Y, UAC->Y, UAA->\*, UAG->\*, UGA->\*, CAU->H, CAC->H, CAA->Q, CAG->Q, GAA->E, GAG->E, AAU->N, AAC->N, AAA->K, AAG->K, GAU->D, GAC->D, UGU->C, UGC->C, UGG->W, CGU->R, CGC->R, CGA->R, CGG->R, AGA->R, AGG->R, GGU->G, GGC->G, GGA->G, GGG->G
 
-A custom mapping may be inserted by first specifying the DNA triplet to be modified, then the single letter amino acid code as the product of the triplet. A common option for phage display systems with nonsense surpression is the alteration of the triplet UAG->\* to UAG->Q.  The change is expressed by replacing \[triplet residue\] with:
+A custom mapping may be inserted by first specifying the DNA triplet to be modified, then the single letter amino acid code as the product of the triplet. A common option for phage display systems with nonsense suppression is the alteration of the triplet UAG->\* to UAG->Q.  The change is expressed by replacing \[triplet residue\] with:
 
 > UAG Q
 
@@ -95,7 +95,7 @@ Note, that multiple changes may be made to the mappings, by continuing to specif
 
 #### Example
 
-The PuLSE distribution is supplied with an example dataset, containing NGS data obtained from sequencing a cyclic 5-mer phage display library containing 5 randomised amino acid positions flanked by cystine residues an expressed in a system with nonsense surpression.  This data is supplied with the PuLSE distribution and is compressed with xz compression.  Before use, it must be decompressed (on linux, you may use unxz, or on windows 7-Zip).  The PuLSE library definition for this library is as follows: CGTTGCXXXXXXXXXXXXXXXTGTGCT.  Nonsense surpression is in the form of the UAG triplet remapped to produce a glutamate residue (Q).
+The PuLSE distribution is supplied with an example dataset, containing NGS data obtained from sequencing a cyclic 5-mer phage display library containing 5 randomised amino acid positions flanked by cystine residues an expressed in a system with nonsense suppression.  This data is supplied with the PuLSE distribution and is compressed with xz compression.  Before use, it must be decompressed (on Linux, you may use unxz, or on windows 7-Zip).  The PuLSE library definition for this library is as follows: CGTTGCXXXXXXXXXXXXXXXTGTGCT.  Nonsense suppression is in the form of the UAG triplet remapped to produce a glutamate residue (Q).
 
 To run PuLSE on the included dataset, supply the library definition and remap UAG to Q, we invoke PuLSE with the following command line:
 

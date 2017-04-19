@@ -17,7 +17,7 @@
 #include <vector>
 
 void ShowUsageAndExit() {
-  std::cerr << "./profilePhageLibrary inFile.fastq libraryDefinition"
+  std::cerr << "./pulse inFile.fastq libraryDefinition"
                "[triplet residue][...]\n"
                "where...\n"
                "inFile.fastq --> the file containing library sequence reads.\n"
