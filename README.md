@@ -13,6 +13,7 @@ PuLSE is designed to read in fastq next generation sequencing data describing re
 ---
 
 - An HTML5 compatible webbrowser to view generated reports. (Tested with Google Chrome 57.0.2987.133 64-bit and Mozilla Firefox 52.0.2 64-bit).
+- To decompress the sample sequencing data, a means to decompress the xz data is required.  On linux this can be achieved with unxz and on windows 7-Zip.
 
 #### To compile from source
 
@@ -94,7 +95,7 @@ Note, that multiple changes may be made to the mappings, by continuing to specif
 
 #### Example
 
-The PuLSE distribution is supplied with an example dataset, containing NGS data obtained from sequencing a cyclic 5-mer phage display library containing 5 randomised amino acid positions flanked by cystine residues an expressed in a system with nonsense surpression.  The PuLSE library definition for this library is as follows: CGTTGCXXXXXXXXXXXXXXXTGTGCT.  Nonsense surpression is in the form of the UAG triplet remapped to produce a glutamate residue (Q).
+The PuLSE distribution is supplied with an example dataset, containing NGS data obtained from sequencing a cyclic 5-mer phage display library containing 5 randomised amino acid positions flanked by cystine residues an expressed in a system with nonsense surpression.  This data is supplied with the PuLSE distribution and is compressed with xz compression.  Before use, it must be decompressed (on linux, you may use unxz, or on windows 7-Zip).  The PuLSE library definition for this library is as follows: CGTTGCXXXXXXXXXXXXXXXTGTGCT.  Nonsense surpression is in the form of the UAG triplet remapped to produce a glutamate residue (Q).
 
 To run PuLSE on the included dataset, supply the library definition and remap UAG to Q, we invoke PuLSE with the following command line:
 
