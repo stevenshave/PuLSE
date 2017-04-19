@@ -31,7 +31,7 @@ Precompiled binaries accompany the PuLSE distribtution package for:
 
 |Platform|32/64 bit|Sha256 sum |
 |---:   |:---|:---|
-|Ububtu Linux 16.04|64-bit|`c0c2081ee8b53b3c75b052d928a812b2d821422799ede5be4a113dfa8c4d05d1`|
+|Ububtu Linux 16.04|64-bit|`887f1badcbd6b57ddedeabe9749c9c87bb109768969c91a1b2b61b92c14ba982`|
 |Windows 7|  64-bit|`a786a247e25a9ca5047e877833d0c5b0bd8a9ad5cb9a1588c37ab9e79b16e606`|
 |Windows 7|  32-bit|`1d1c23bce23c150fe0d2d7c6cd58e8981cfcd57d5e5801f8744e6af2f1e74d15`|
 

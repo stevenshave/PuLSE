@@ -1,4 +1,5 @@
 pulse
+!binaries/ubuntu-16.04-64-bit/pulse
 pulse-test
 sample-pulse-5merCyclic-CGTTGCXXXXXXXXXXXXXXXTGTGCT.fastq
 sample-pulse-5merCyclic-CGTTGCXXXXXXXXXXXXXXXTGTGCT.html
@@ -9,6 +10,7 @@ config.status
 configure.scan
 *.html
 ~AutoRecover*
+
 
 # The following created by https://www.gitignore.io/api/visualstudio,c++,windows,linux
 

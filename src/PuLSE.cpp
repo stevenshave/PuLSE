@@ -16,17 +16,16 @@
 #include <tuple>
 #include <vector>
 
-
-
 void ShowUsageAndExit() {
   std::cerr << "./profilePhageLibrary inFile.fastq libraryDefinition"
-               "[triplet residue][...]\n";
-  std::cerr << "where...\n";
-  std::cerr << "inFile.fastq --> the file containing library sequence reads.\n";
-  std::cerr << "library Definition --> denotes the sequence preceeding the randomized stretch of bases.\n";
-
-  std::cerr << "[triplet residue] --> optional argument to change the standard codon triplet to AA residue mappin\n";
-  std::cerr << "                      useful if using a page display system which incorporates nonsense surpression\n";
+               "[triplet residue][...]\n"
+               "where...\n"
+               "inFile.fastq --> the file containing library sequence reads.\n"
+               "library Definition --> denotes the sequence preceeding the "
+               "randomized stretch of bases.\n"
+               "[triplet residue] --> optional argument to change the standard "
+               "codon triplet to AA residue mapping.  Useful if using a page "
+               "display system which incorporates nonsense surpression\n";
   exit(-1);
 }
 
