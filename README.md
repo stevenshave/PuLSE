@@ -13,7 +13,9 @@ PuLSE is designed to read in fastq next generation sequencing data describing re
 ---
 
 - An HTML5 compatible web browser to view generated reports. (Tested with Google Chrome 57.0.2987.133 64-bit and Mozilla Firefox 52.0.2 64-bit).
-- To decompress the sample sequencing data, a means to decompress the xz data is required.  On Linux this can be achieved with unxz and on windows 7-Zip.
+- To decompress the sample sequencing data, a means to decompress the gz data is required.  On Linux this can be achieved with gunzip and on windows 7-Zip or similar.  However, on linux, PuLSE is able to read gz compressed fastq files, making prior decompression unnecessary.
+- On linux, the common gzlib is used to read compressed input.
+- The linux version of PuLSE makes use of the ZLib wrapper zstr also included in this source distribution (see src/zstr).  zstr is licensed under the MIT license and Copyright (c) 2015 Matei David, Ontario Institute for Cancer Research [https://github.com/mateidavid/zstr](https://github.com/mateidavid/zstr).
 
 #### To compile from source
 
@@ -59,11 +61,11 @@ Alternatively, you may manually compile PuLSE via:
 
 ##### GCC
 
->g++ -o pulse src/PuLSE.cpp  -Wall -O3 -std=c++1y
+>g++ -o pulse src/PuLSE.cpp  -Wall -O3 -std=c++1y -lz
 
 ##### clang
 
->clang++ -o pulse src/PuLSE.cpp  -Wall -O3 -std=c++1y
+>clang++ -o pulse src/PuLSE.cpp  -Wall -O3 -std=c++1y -lz
 
 ## Usage
 
@@ -100,5 +102,7 @@ The PuLSE distribution is supplied with an example dataset, containing NGS data 
 To run PuLSE on the included dataset, supply the library definition and remap UAG to Q, we invoke PuLSE with the following command line:
 
 > `pulse sample-pulse-5merCyclic-CGTTGCXXXXXXXXXXXXXXXTGTGCT.fastq CGTTGCXXXXXXXXXXXXXXXTGTGCT UAG Q`
+
+Alternatively, under linux you may run the bash script `runExampleDataset.bash`.
 
 PuLSE will then output a HTML report with the name `sample-pulse-5merCyclic-CGTTGCXXXXXXXXXXXXXXXTGTGCT.html`

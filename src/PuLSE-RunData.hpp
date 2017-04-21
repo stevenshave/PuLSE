@@ -1,5 +1,31 @@
+/*
+PuLSE version 1.2
+Copyright(c) 2017 Steven Shave
+
+Distributed under the MIT license
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files(the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and / or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions :
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
 #pragma once
 #include <algorithm>
+#include <cmath>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
@@ -8,7 +34,9 @@
 #include <string>
 #include <tuple>
 #include <unordered_map>
-#include <cmath>
+#ifdef __linux__
+#include "zstr/src/zstr.hpp"
+#endif
 
 #include <vector>
 class RunData {
@@ -35,6 +63,9 @@ public:
   using seenCountCumulative = unsigned int;
   std::vector<unsigned int> nTimesProtSeen, nTimesDNASeen,
       nTimesProtSeenCumulative, nTimesDNASeenCumulative;
+
+  // DNA triplet to AA mapping.  Entries can be changed/remapped via command
+  // line arguments
   std::unordered_map<std::string, char> tripletToAAMap{
       std::make_pair("UUU", 'F'), std::make_pair("UUC", 'F'),
       std::make_pair("UUA", 'L'), std::make_pair("UUG", 'L'),
@@ -73,6 +104,7 @@ public:
   explicit RunData(std::string &&ffn, std::string &&libDef) {
     fastaFilename = std::move(ffn);
     libraryDefinition = std::move(libDef);
+    // Ensure library definition is uppercase
     std::transform(libraryDefinition.begin(), libraryDefinition.end(),
                    libraryDefinition.begin(), toupper);
     dnalength =
@@ -105,10 +137,12 @@ public:
     }
   };
 
-  //Start reading sequences
+  // Start reading sequences
   void ReadSequences() {
     std::string protsequence;
     unsigned ntimesfound;
+    // Lambda to insert prot into map (if it does not already exist), otherwise,
+    // increment the occurance count
     auto insertIntoProtMap = [&]() {
       auto index = map_proteinSequences.find(protsequence);
       if (index == map_proteinSequences.end()) {
@@ -118,21 +152,25 @@ public:
       }
     };
 
+    // Collect DNA reads in a map (DNA sequence --> count)
     map_DNASequences =
         ReadPhageLibraryQC(fastaFilename, sequenceBeginMarker,
                            sequenceEndMarker, dnalength, numReads);
 
+    // Map DNA sequences to protein sequences map
     for (auto &&i : map_DNASequences) {
       protsequence = translateDNA(replaceChar(i.first, 'T', 'U'));
       ntimesfound = i.second;
       insertIntoProtMap();
     }
+
     dnamaxoccurances =
         std::max_element(map_DNASequences.begin(), map_DNASequences.end(),
                          [](const auto &p1, const auto &p2) {
                            return p1.second < p2.second;
                          })
             ->second;
+
     protmaxoccurances = std::max_element(map_proteinSequences.begin(),
                                          map_proteinSequences.end(),
                                          [](const auto &p1, const auto &p2) {
@@ -141,7 +179,7 @@ public:
                             ->second;
   };
 
-  //Populate simple count statistics
+  // Populate simple count statistics
   void PopulateBasicStats() {
     nProtMax = static_cast<int>((std::pow(20, (dnalength / 3))));
     nProtNotFound = nProtMax - map_proteinSequences.size();
@@ -149,7 +187,7 @@ public:
     nDNANotFound = nDNAMax - map_DNASequences.size();
   };
 
-  //Populate cumulative counts
+  // Populate cumulative counts
   void PopulateCumulativeOccurances() {
     nTimesDNASeen = std::vector<unsigned int>(dnamaxoccurances + 1, 0);
     nTimesDNASeenCumulative = nTimesDNASeen;
@@ -178,7 +216,7 @@ public:
     }
   };
 
-  //Populate the most common protein and DNA sequences
+  // Populate the most common protein and DNA sequences
   void PopulateCommonOccurances() {
     for (auto &&i : map_DNASequences) {
       if (i.second == 1) {
@@ -187,6 +225,7 @@ public:
       commondna.push_back(std::make_pair(i.second, i.first));
     }
     std::sort(commondna.rbegin(), commondna.rend());
+    // Only keep the top 100 most frequently occuring DNA sequences.
     if (commondna.size() > 100) {
       commondna.resize(100);
     }
@@ -196,13 +235,14 @@ public:
       }
       commonprot.push_back(std::make_pair(i.second, i.first));
     }
+    // Only keep the top 100 most commonly occuring protein sequences.
     std::sort(commonprot.rbegin(), commonprot.rend());
     if (commonprot.size() > 100) {
       commonprot.resize(100);
     }
   };
 
-  //Make heatmaps
+  // Make heatmaps
   void PopulateHeatmaps() {
     std::vector<std::unordered_map<char, unsigned int>> tmp_protmap(
         dnalength / 3, std::unordered_map<char, unsigned int>());
@@ -254,7 +294,8 @@ public:
   };
 
 private:
-  // Read fastq library file containing reads and populate
+  // Read fastq library file containing reads and populate a map containing DNA
+  // sequences and occurances
   std::unordered_map<std::string, unsigned int>
   ReadPhageLibraryQC(const std::string &fastaFilename,
                      const std::string &beginMarker,
@@ -276,9 +317,16 @@ private:
 
     std::unordered_map<std::string, unsigned int> sequences;
     std::string line;
+// If on linux, then we can optionally read gz compressed input fastq files.
+#ifdef __linux__
+    zstr::ifstream inputfile(fastaFilename);
+#else
+    // If not, then just read a standard, plaintext fastq file.
     std::ifstream inputfile(fastaFilename);
+#endif
     std::string sequence;
 
+    // Lambda to insert DNA sequence into map (also containing occurance counts)
     auto insertSequenceIntoMap = [&]() {
       auto index = sequences.find(sequence);
       if (index == sequences.end()) {
@@ -288,6 +336,7 @@ private:
       }
     };
 
+    // Lambda to extract the forward sequence
     auto getForwardSequence = [&]() {
       auto loc = line.find(beginMarker);
       while (loc != std::string::npos) {
@@ -304,6 +353,7 @@ private:
       return std::string();
     };
 
+    // Lambda to extract the reverse sequence
     auto getReverseSequence = [&]() {
       auto loc = line.find(shortBeginMarker);
       while (loc != std::string::npos) {
@@ -320,14 +370,18 @@ private:
       return std::string();
     };
 
+    // Read the input fastq file
     while (getline(inputfile, line)) {
+      // Capitalise
       std::transform(line.begin(), line.end(), line.begin(), toupper);
+      // Read forwards
       sequence = getForwardSequence();
       if (sequence.size() == dnalength) {
         ++numReads;
         insertSequenceIntoMap();
         continue;
       }
+      // Now try to read the reverse
       std::reverse(line.begin(), line.end());
       if (swapBasesInPlace(line)) {
         sequence = getReverseSequence();
@@ -344,53 +398,53 @@ private:
 
   // Change DNA sequence to complimentary strand in place
   bool swapBasesInPlace(std::string &in) {
-	  for (auto &&c : in) {
-		  if (c == 'A') {
-			  c = 'T';
-			  continue;
-		  }
-		  if (c == 'T') {
-			  c = 'A';
-			  continue;
-		  }
-		  if (c == 'C') {
-			  c = 'G';
-			  continue;
-		  }
-		  if (c == 'G') {
-			  c = 'C';
-			  continue;
-		  }
-		  return false;
-	  }
-	  return true;
+    for (auto &&c : in) {
+      if (c == 'A') {
+        c = 'T';
+        continue;
+      }
+      if (c == 'T') {
+        c = 'A';
+        continue;
+      }
+      if (c == 'C') {
+        c = 'G';
+        continue;
+      }
+      if (c == 'G') {
+        c = 'C';
+        continue;
+      }
+      return false;
+    }
+    return true;
   };
 
   // Replace a character in a string, returning the new string
   std::string replaceChar(std::string str, const char ch1, const char ch2) {
-	  std::replace(str.begin(), str.end(), ch1, ch2);
-	  return str;
+    std::replace(str.begin(), str.end(), ch1, ch2);
+    return str;
   };
 
   // Convert a DNA triplet (string of length 3) into protein AA residue, such
   // as: "CAT" --> 'H'
   std::string translateDNATriplet(const std::string &in) {
-	  auto location = tripletToAAMap.find(in);
-	  if (location == tripletToAAMap.end()) {
-		  return "-";
-	  }
-	  return std::string(1, location->second);
+    auto location = tripletToAAMap.find(in);
+    if (location == tripletToAAMap.end()) {
+      return "-";
+    }
+    return std::string(1, location->second);
   };
 
-  //Converts string of DNA into AA sequence;
+  // Converts string of DNA into AA sequence;
   std::string translateDNA(std::string in) {
-	  std::string out = "";
-	  if (in.length() % 3 != 0) {
-		  return out;
-	  }
-	  for (unsigned int i = 0; i < in.length(); i += 3) {
-		  out += translateDNATriplet(in.substr(i, 3));
-	  }
-	  return out;
+    std::string out = "";
+    if (in.length() % 3 != 0) {
+      return out;
+    }
+    for (unsigned int i = 0; i < in.length(); i += 3) {
+      out += translateDNATriplet(in.substr(i, 3));
+    }
+    return out;
   };
 };

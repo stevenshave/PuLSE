@@ -15,7 +15,7 @@ AC_CHECK_FUNCS([pow])
 
 AC_CONFIG_FILES([Makefile])
 AC_LANG(C++)
-CXXFLAGS="-Wall -O3 -std=c++1y"
+CXXFLAGS="-Wall -O3 -std=c++1y -lz"
 AC_HEADER_STDC
 # FLag -std=c++1y
 AC_MSG_CHECKING([if c++ compiler supports -std=c++1y (C++14)])

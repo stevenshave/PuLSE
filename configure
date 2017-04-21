@@ -631,7 +631,6 @@ CPP
 ac_ct_CC
 CFLAGS
 CC
-FFFFFFFFFFFFFFFFFFFFFFFF
 OBJEXT
 EXEEXT
 ac_ct_CXX
@@ -2698,45 +2697,6 @@ ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
-# Extract the first word of "", so it can be a program name with args.
-set dummy ; ac_word=$2
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
-$as_echo_n "checking for $ac_word... " >&6; }
-if ${ac_cv_path_FFFFFFFFFFFFFFFFFFFFFFFF+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  case $FFFFFFFFFFFFFFFFFFFFFFFF in
-  [\\/]* | ?:[\\/]*)
-  ac_cv_path_FFFFFFFFFFFFFFFFFFFFFFFF="$FFFFFFFFFFFFFFFFFFFFFFFF" # Let the user override the test with a path.
-  ;;
-  *)
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-    for ac_exec_ext in '' $ac_executable_extensions; do
-  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_path_FFFFFFFFFFFFFFFFFFFFFFFF="$as_dir/$ac_word$ac_exec_ext"
-    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-  done
-IFS=$as_save_IFS
-
-  ;;
-esac
-fi
-FFFFFFFFFFFFFFFFFFFFFFFF=$ac_cv_path_FFFFFFFFFFFFFFFFFFFFFFFF
-if test -n "$FFFFFFFFFFFFFFFFFFFFFFFF"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $FFFFFFFFFFFFFFFFFFFFFFFF" >&5
-$as_echo "$FFFFFFFFFFFFFFFFFFFFFFFF" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-
 
 
 # Checks for typedefs, structures, and compiler characteristics.
@@ -3786,7 +3746,7 @@ ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
-CXXFLAGS="-Wall -O3 -std=c++1y"
+CXXFLAGS="-Wall -O3 -std=c++1y -lz"
 
 ac_ext=cpp
 ac_cpp='$CXXCPP $CPPFLAGS'

@@ -1,3 +1,28 @@
+/*
+PuLSE version 1.2
+Copyright(c) 2017 Steven Shave
+
+Distributed under the MIT license
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files(the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and / or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions :
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
 #pragma once
 #include "PuLSE-RunData.hpp"
 #include <cctype>
@@ -13,19 +38,26 @@ private:
   std::shared_ptr<RunData> rundata;
 
 public:
+  // Constructor makes a copy of a shared pointer to RunData.
   explicit PuLSEHTMLWriter(std::shared_ptr<RunData> indata) {
     rundata = std::move(indata);
-    file.open(
-        rundata->fastaFilename.substr(0, rundata->fastaFilename.rfind(".")) +
-        ".html");
+
+    // Trim inputfilename to derive output HTML file.
+    std::string htmlfilename =
+        rundata->fastaFilename.substr(0, rundata->fastaFilename.rfind("."));
+    if (htmlfilename.substr(htmlfilename.size() - 5, 5).compare("fastq") == 0) {
+      htmlfilename = htmlfilename.substr(0, htmlfilename.size() - 6);
+    }
+    htmlfilename += ".html";
+
+    // Open HTML file for writing
+    file.open(htmlfilename);
     if (!file) {
-      std::cerr << "Error opening HTML output file: "
-                << rundata->fastaFilename.substr(
-                       0, rundata->fastaFilename.rfind(".")) +
-                       ".html"
+      std::cerr << "Error opening HTML output file: " << htmlfilename
                 << ", exiting\n";
       exit(-1);
     }
+    // Output beginning of HTML file.
     file << "<!DOCTYPE html>"
             "<html lang = \"en\">"
             "<head>"
@@ -49,6 +81,7 @@ public:
             "</div>";
   };
 
+  // Output simple run info into the top of the HTML file, detailing parameters
   void WriteRunInfo() {
     file << "<div class = \"container\">"
             "<h3>Run information</h3>"
@@ -77,12 +110,15 @@ public:
             "</div>";
   };
 
+  // Close open HTML tags and finaly close the file.
   void CloseHTMLFile() {
     file << "</body>"
             "</html>";
     file.close();
   };
 
+  // Add simple statistics to the HTML file, such as number of reads made,
+  // number unique at DNA and protein level etc
   void WriteBasicStats() {
     std::vector<std::vector<std::string>> data;
     insertTableRow(data, std::string("Number of valid reads"),
@@ -118,6 +154,8 @@ public:
                    std::vector<std::string>{"Property", "Value"}, data);
   };
 
+  // Cumulative counts is a legacy approach to evaluation, included in PuLSE for
+  // completeness.
   void WriteCumulativeCounts() {
     std::vector<std::vector<std::string>> data1, data2;
     unsigned int i = 0;
@@ -157,6 +195,7 @@ public:
       }
     }
 
+    // Write side by side tables.
     Write2HTMLTables(file, "Cumulative counts",
                      "The number of sequences (count) seen N times. Cumulative "
                      "count gives sequences seen at least N times.  N of 1 to "
@@ -170,6 +209,7 @@ public:
                      data2);
   };
 
+  // Write tables of the most commonly occuring DNA + protein sequences.
   void WriteCommonOccurances() {
     std::vector<std::vector<std::string>> data1, data2;
     for (unsigned i = 0; i < 100 && i < rundata->commondna.size(); ++i) {
@@ -187,8 +227,9 @@ public:
                      {"Protein sequence", "Count"}, data2);
   };
 
+  // Write colour coded heatmaps providing at-a-glance evaluation of positional
+  // base/residue enrichement.
   void WriteHeatMaps() {
-
     std::vector<std::string> headings{"Residue"};
     for (unsigned i = 1; i <= rundata->dnalength / 3; ++i) {
       headings.push_back("Position #" + std::to_string(i));
@@ -268,17 +309,21 @@ public:
   };
 
 private:
+  // Add row to table data vector.  Vector of vectors - this handles 2 columns.
   void insertTableRow(std::vector<std::vector<std::string>> &vec,
                       const std::string &in1, const std::string &in2) {
     vec.push_back(std::vector<std::string>{in1, in2});
   };
 
+  // Templated add row to table data vector.  Vector of vectors - this handles 2
+  // columns.
   template <typename T>
   void insertTableRow(std::vector<std::vector<std::string>> &vec,
                       const std::string &in1, const T &in2) {
     vec.push_back(std::vector<std::string>{in1, std::to_string(in2)});
   };
-
+  // Templated add row to table data vector.  Vector of vectors - this handles 4
+  // columns.
   template <typename T1, typename T2, typename T3, typename T4>
   void insertTableRow(std::vector<std::vector<std::string>> &vec, const T1 &in1,
                       const T2 &in2, const T3 &in3, const T4 &in4) {
@@ -287,6 +332,8 @@ private:
                                  std::to_string(in3), std::to_string(in4)});
   };
 
+  // Templated add row to table data vector.  Vector of vectors - this handles 3
+  // columns.
   template <typename T1, typename T2, typename T3>
   void insertTableRow(std::vector<std::vector<std::string>> &vec, const T1 &in1,
                       const T2 &in2, const T3 &in3, const std::string &in4) {
@@ -294,12 +341,14 @@ private:
         std::to_string(in1), std::to_string(in2), std::to_string(in3), in4});
   };
 
+  // Add row to table data vector.  Vector of vectors - this handles 4 columns.
   void insertTableRow(std::vector<std::vector<std::string>> &vec,
                       const std::string &in1, const std::string &in2,
                       const std::string &in3, const std::string &in4) {
     vec.push_back(std::vector<std::string>{in1, in2, in3, in4});
   };
 
+  // Write the HTML for a simple table, with headings and data as arguments
   void WriteHTMLTable(std::ofstream &out, const std::string &title,
                       const std::string &subtitle,
                       const std::vector<std::string> &headings,
@@ -327,12 +376,16 @@ private:
     out << "</tbody></table></div>";
   };
 
+  // Write the HTML for a normalised data table.  Like a simple table, but
+  // entities are colour coded depending on their value > or < 1 (the expected
+  // rate of inclusion).
   void
   WriteNormalisedHTMLTable(std::ofstream &out, const std::string &title,
                            const std::string &subtitle,
                            const std::vector<std::string> &headings,
                            const std::vector<std::vector<std::string>> &data) {
 
+    // Lambda to go from float to rgb intensities out of 100.
     auto getIntensities = [](float val, unsigned int &r, unsigned int &g,
                              unsigned int &b) {
       constexpr float upperbound = 2.0f;
@@ -357,6 +410,8 @@ private:
       return;
     };
 
+    // Lambda which takes float intensities up to a max value of 100 and
+    // converts to HTML format hex colours
     auto getHexColour = [&getIntensities](const std::string &in) {
       unsigned int r, g, b;
       std::stringstream ss;
@@ -391,6 +446,7 @@ private:
       std::transform(retval.begin(), retval.end(), retval.begin(), toupper);
       return retval;
     };
+	//Output the table
     out << "<div class = \"container\">"
            "<h2>"
         << title
@@ -414,6 +470,7 @@ private:
     out << "</tbody></table></div>";
   };
 
+  //Like writetables, but outputs two side-by-side tables.
   void Write2HTMLTables(std::ofstream &out, const std::string &title,
                         const std::string &subtitle,
                         const std::vector<std::string> &headings1,
