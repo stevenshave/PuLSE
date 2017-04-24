@@ -10,8 +10,6 @@ PuLSE is designed to read in fastq next generation sequencing data describing re
 
 ## Dependencies
 
----
-
 - An HTML5 compatible web browser to view generated reports. (Tested with Google Chrome 57.0.2987.133 64-bit and Mozilla Firefox 52.0.2 64-bit).
 - To decompress the sample sequencing data, a means to decompress the gz data is required.  On Linux this can be achieved with gunzip and on windows 7-Zip or similar.  However, on linux, PuLSE is able to read gz compressed fastq files, making prior decompression unnecessary.
 - On linux, the common gzlib is used to read compressed input.
@@ -101,7 +99,11 @@ The PuLSE distribution is supplied with an example dataset, containing NGS data 
 
 To run PuLSE on the included dataset, supply the library definition and remap UAG to Q, we invoke PuLSE with the following command line:
 
+On windows:
 > `pulse sample-pulse-5merCyclic-CGTTGCXXXXXXXXXXXXXXXTGTGCT.fastq CGTTGCXXXXXXXXXXXXXXXTGTGCT UAG Q`
+
+On linux:
+> `pulse sample-pulse-5merCyclic-CGTTGCXXXXXXXXXXXXXXXTGTGCT.fastq.gz CGTTGCXXXXXXXXXXXXXXXTGTGCT UAG Q`
 
 Alternatively, under linux you may run the bash script `runExampleDataset.bash`.
 
