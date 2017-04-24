@@ -1,4 +1,4 @@
-# PuLSE (Phage Library Sequence Evaluation)
+# PuLSE (Phage Library Sequence Evaluation) v1.2
 
 ### Quality control and quantification of peptide sequences explored by phage display libraries.
 
