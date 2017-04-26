@@ -6,7 +6,7 @@
 
 As the complexity of phage display libraries increases, the ability to screen all theoretical library members is lost. Quality control must therefore be carried out on DNA base occurrence frequency derived from a subset of library reads taken from next generation sequencing.
 
-PuLSE is designed to read in fastq next generation sequencing data describing reads from a phage display library.  Output is positional base frequencies, as well as protein residue translation position counts and normalised frequencies.  Using this output it is easy to identify skewed libraries or positions greatly enriched for certain bases.  Output is in the form of an HTML formatted report.
+PuLSE is designed to read in fastq next generation sequencing data describing reads from a phage display library.  Output is positional base frequencies, as well as protein residue translation position counts and normalised frequencies.  Using this output it is easy to identify skewed libraries or positions greatly enriched for certain bases.  Output is in the form of an HTML formatted report and easily parsable tab delimited text file.
 
 ## Dependencies
 
@@ -31,9 +31,9 @@ Pre compiled binaries accompany the PuLSE distribution package for:
 
 |Platform|32/64 bit|Sha256 sum |
 |---:   |:---|:---|
-|Ubuntu Linux 16.04|64-bit|`dfcfe510228843b5fbfd2ccbddf820e5bf33e85a3734843abf0d4504fd39cc40`|
-|Windows 7|  64-bit|`a27b1e497caa4fab61728eb9ea67ce1459c8913d8c72d2e09168564812087547`|
-|Windows 7|  32-bit|`40347ce77e24a2097a537c4d9a03b0b9a72484e9cbb7a901a57d87f4eadbcc8b`|
+|Ubuntu Linux 16.04|64-bit|`ec36d0ad2abfd584a2ab266cd7ae62c0216b28882ac9d2d839a61d254dbb7a1d`|
+|Windows 7|  64-bit|`4ea24e632d0742e8ca738caf9638fafbd68d710704317d498a0761aa37939c2b`|
+|Windows 7|  32-bit|`7b7185469380b771484cdb62966937d08e107f7fdf9252752bd35131be316a25`|
 
 Pre compiled binaries can be found in the 'binaries sub folder'.  NOTE:  Windows binaries require the Visual C++ Redistributable for Visual Studio 2015 to be installed.  [Obtain MSVCP140.DLL - https://www.microsoft.com/en-gb/download/details.aspx?id=48145](https://www.microsoft.com/en-gb/download/details.aspx?id=48145) 
 
@@ -107,4 +107,5 @@ On linux:
 
 Alternatively, under linux you may run the bash script `runExampleDataset.bash`.
 
-PuLSE will then output a HTML report with the name `sample-pulse-5merCyclic-CGTTGCXXXXXXXXXXXXXXXTGTGCT.html`
+PuLSE will then output a HTML report with the name `sample-pulse-5merCyclic-CGTTGCXXXXXXXXXXXXXXXTGTGCT.html` and a simple tab delimited parsable text file report
+`sample-pulse-5merCyclic-CGTTGCXXXXXXXXXXXXXXXTGTGCT.txt`

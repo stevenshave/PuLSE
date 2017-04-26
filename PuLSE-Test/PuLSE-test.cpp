@@ -22,7 +22,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-#include "../src/PuLSE-HTMLWriter.hpp"
+#include "../src/PuLSE-Writer.hpp"
 #include "../src/PuLSE-RunData.hpp"
 #include <array>
 #include <cmath>
@@ -571,17 +571,17 @@ int main(int argc, char **argv) {
   auto rundata = std::make_shared<RunData>("testInput.fastq",
                                            "CGTTGCXXXXXXXXXXXXXXXTGTGCT");
   {
-    PuLSEHTMLWriter htmlwriter(rundata);
+    PuLSEWriter writer(rundata);
     rundata->ReadSequences();
-    htmlwriter.WriteRunInfo();
+    writer.WriteRunInfo();
     rundata->PopulateBasicStats();
-    htmlwriter.WriteBasicStats();
+    writer.WriteBasicStats();
     rundata->PopulateCumulativeOccurances();
-    htmlwriter.WriteCumulativeCounts();
+    writer.WriteCumulativeCounts();
     rundata->PopulateCommonOccurances();
-    htmlwriter.WriteCommonOccurances();
+    writer.WriteCommonOccurances();
     rundata->PopulateHeatmaps();
-    htmlwriter.WriteHeatMaps();
+    writer.WriteHeatMaps();
 
     {
       std::vector<std::vector<std::string>> nProtRes(

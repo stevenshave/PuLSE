@@ -23,8 +23,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#include "PuLSE-HTMLWriter.hpp"
 #include "PuLSE-RunData.hpp"
+#include "PuLSE-Writer.hpp"
 #include <array>
 #include <cmath>
 #include <cstdlib>
@@ -39,7 +39,7 @@ SOFTWARE.
 #include <vector>
 
 // Version number
-constexpr char PuLSEVersion[] = "1.2";
+constexpr char PuLSEVersion[] = "1.3";
 
 // 2 different usages, depending on platform (linux has the ability to read gz
 // compressed input files)
@@ -86,10 +86,10 @@ int main(int argc, char **argv) {
     ShowUsageAndExit();
   }
 
-  // Make a RunData object, then pass to a PuLSEHTMLWriter object
+  // Make a RunData object, then pass to a PuLSEWriter object
   auto rundata =
       std::make_shared<RunData>(std::string(argv[1]), std::string(argv[2]));
-  PuLSEHTMLWriter htmlwriter(rundata);
+  PuLSEWriter writer(rundata);
 
   // Output some essentails to the termial
   std::cerr << "Data file:\t\t\t" << rundata->fastaFilename << "\n";
@@ -105,24 +105,24 @@ int main(int argc, char **argv) {
   // Read DNA sequences.
   rundata->ReadSequences();
 
-  // Write some simple parameters to the HTML report.
-  htmlwriter.WriteRunInfo();
+  // Write some simple parameters to the 2 (HTML + TXT) reports.
+  writer.WriteRunInfo();
 
   // Output basic statistics
   rundata->PopulateBasicStats();
-  htmlwriter.WriteBasicStats();
+  writer.WriteBasicStats();
 
   // Output cumulative occurances
   rundata->PopulateCumulativeOccurances();
-  htmlwriter.WriteCumulativeCounts();
+  writer.WriteCumulativeCounts();
 
   // Output common occurances
   rundata->PopulateCommonOccurances();
-  htmlwriter.WriteCommonOccurances();
+  writer.WriteCommonOccurances();
 
   // Output positional counts and heatmaps.
   rundata->PopulateHeatmaps();
-  htmlwriter.WriteHeatMaps();
+  writer.WriteHeatMaps();
 
   return 0;
 }

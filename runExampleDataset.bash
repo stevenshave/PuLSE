@@ -7,4 +7,4 @@ fi
 
 ./pulse sample-pulse-5merCyclic-CGTTGCXXXXXXXXXXXXXXXTGTGCT.fastq.gz CGTTGCXXXXXXXXXXXXXXXTGTGCT UAG Q
 
-echo -e "Pulse run completed, you should now be able to open the newly generated HTML \nreport filesample-pulse-5merCyclic-CGTTGCXXXXXXXXXXXXXXXTGTGCT.html"
+echo -e "Pulse run completed, you should now be able to open the newly generated HTML \nand txt reports - sample-pulse-5merCyclic-CGTTGCXXXXXXXXXXXXXXXTGTGCT.html\n & sample-pulse-5merCyclic-CGTTGCXXXXXXXXXXXXXXXTGTGCT.txt"

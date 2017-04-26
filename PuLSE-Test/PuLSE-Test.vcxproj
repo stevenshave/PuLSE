@@ -114,8 +114,8 @@
     <ClCompile Include="PuLSE-test.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\PuLSE-HTMLWriter.hpp" />
     <ClInclude Include="..\src\PuLSE-RunData.hpp" />
+    <ClInclude Include="..\src\PuLSE-Writer.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

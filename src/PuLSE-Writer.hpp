@@ -32,89 +32,105 @@ SOFTWARE.
 #include <sstream>
 #include <string>
 
-class PuLSEHTMLWriter {
+class PuLSEWriter {
 private:
-  std::ofstream file;
+  std::ofstream htmlFile, txtFile;
   std::shared_ptr<RunData> rundata;
 
 public:
   // Constructor makes a copy of a shared pointer to RunData.
-  explicit PuLSEHTMLWriter(std::shared_ptr<RunData> indata) {
+  explicit PuLSEWriter(std::shared_ptr<RunData> indata) {
     rundata = std::move(indata);
 
     // Trim inputfilename to derive output HTML file.
-    std::string htmlfilename =
+    std::string htmlFileName =
         rundata->fastaFilename.substr(0, rundata->fastaFilename.rfind("."));
-    if (htmlfilename.substr(htmlfilename.size() - 5, 5).compare("fastq") == 0) {
-      htmlfilename = htmlfilename.substr(0, htmlfilename.size() - 6);
+    if (htmlFileName.substr(htmlFileName.size() - 5, 5).compare("fastq") == 0) {
+      htmlFileName = htmlFileName.substr(0, htmlFileName.size() - 6);
     }
-    htmlfilename += ".html";
+    std::string txtFileName = htmlFileName;
+    txtFileName += ".txt";
+    htmlFileName += ".html";
 
     // Open HTML file for writing
-    file.open(htmlfilename);
-    if (!file) {
-      std::cerr << "Error opening HTML output file: " << htmlfilename
+    htmlFile.open(htmlFileName);
+    if (!htmlFile) {
+      std::cerr << "Error opening HTML output file: " << htmlFileName
                 << ", exiting\n";
       exit(-1);
     }
+
     // Output beginning of HTML file.
-    file << "<!DOCTYPE html>"
-            "<html lang = \"en\">"
-            "<head>"
-            "<title>PuLSE output - Phage Library Sequence Evaluation </title>"
-            "<meta charset = \"utf-8\">"
-            "<meta name = \"viewport\" content = \"width=device-width, "
-            "initial-scale=1\">"
-            "<link rel = \"stylesheet\" href = "
-            "\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/"
-            "bootstrap.min.css\">"
-            "<script src = "
-            "\"https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/"
-            "jquery.min.js\"></script>"
-            "<script src = "
-            "\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/"
-            "bootstrap.min.js\"></script>"
-            "</head>"
-            "<body>"
-            "<div class = \"container\">"
-            "<h1>PuLSE output</h1>"
-            "</div>";
+    htmlFile
+        << "<!DOCTYPE html>"
+           "<html lang = \"en\">"
+           "<head>"
+           "<title>PuLSE output - Phage Library Sequence Evaluation </title>"
+           "<meta charset = \"utf-8\">"
+           "<meta name = \"viewport\" content = \"width=device-width, "
+           "initial-scale=1\">"
+           "<link rel = \"stylesheet\" href = "
+           "\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/"
+           "bootstrap.min.css\">"
+           "<script src = "
+           "\"https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/"
+           "jquery.min.js\"></script>"
+           "<script src = "
+           "\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/"
+           "bootstrap.min.js\"></script>"
+           "</head>"
+           "<body>"
+           "<div class = \"container\">"
+           "<h1>PuLSE output</h1>"
+           "</div>";
+    // Open TXT file for writing
+    txtFile.open(txtFileName);
+    if (!txtFile) {
+      std::cerr << "Error opening TXT output file: " << txtFileName
+                << ", exiting\n";
+      exit(-1);
+    }
+    // Output beginning of TXT file.
+    txtFile << "PuLSE output - Phage Library Sequence Evaluation\n";
   };
 
   // Output simple run info into the top of the HTML file, detailing parameters
   void WriteRunInfo() {
-    file << "<div class = \"container\">"
-            "<h3>Run information</h3>"
-            "</div>"
-            "<div class=\"container\"><table class=\"table\">"
-            "<thread><tr><th>Parameter</th><th>Value</th></tr></thread>"
-            "<tbody><tr>"
+    htmlFile << "<div class = \"container\">"
+                "<h3>Run information</h3>"
+                "</div>"
+                "<div class=\"container\"><table class=\"table\">"
+                "<thread><tr><th>Parameter</th><th>Value</th></tr></thread>"
+                "<tbody><tr>"
 
-            "<tr><td>Data file</td><td>"
-         << rundata->fastaFilename
-         << "</td></tr>"
-            "<tr><td>Library definition</td><td>"
-         << rundata->libraryDefinition
-         << "</td></tr>"
-            "<tr><td>Forward upstream marker</td><td>"
-         << rundata->sequenceBeginMarker
-         << "</td></tr>"
-            "<tr><td>Forward downstream  marker</td><td>"
-         << rundata->sequenceEndMarker
-         << "</td></tr>"
-            "<tr><td>Randomized DNA positions</td><td>"
-         << rundata->dnalength << "</td></tr>"
-         << "<tr><td>Non-standard AA codes used</td><td>"
-         << rundata->nonstandardCodesUsed << "</td></tr>"
-         << "</tbody></table>"
-            "</div>";
-  };
+                "<tr><td>Data file</td><td>"
+             << rundata->fastaFilename
+             << "</td></tr>"
+                "<tr><td>Library definition</td><td>"
+             << rundata->libraryDefinition
+             << "</td></tr>"
+                "<tr><td>Forward upstream marker</td><td>"
+             << rundata->sequenceBeginMarker
+             << "</td></tr>"
+                "<tr><td>Forward downstream  marker</td><td>"
+             << rundata->sequenceEndMarker
+             << "</td></tr>"
+                "<tr><td>Randomized DNA positions</td><td>"
+             << rundata->dnalength << "</td></tr>"
+             << "<tr><td>Non-standard AA codes used</td><td>"
+             << rundata->nonstandardCodesUsed << "</td></tr>"
+             << "</tbody></table>"
+                "</div>";
 
-  // Close open HTML tags and finaly close the file.
-  void CloseHTMLFile() {
-    file << "</body>"
-            "</html>";
-    file.close();
+    txtFile << "Run information:\n"
+            << "Data file\t " << rundata->fastaFilename << "\n"
+            << "Library definition\t" << rundata->libraryDefinition << "\n"
+            << "Forward upstream marker" << rundata->sequenceBeginMarker << "\n"
+            << "Forward downstream  marker" << rundata->sequenceEndMarker
+            << "\n"
+            << "Randomized DNA positions" << rundata->dnalength << "\n"
+            << "Non-standard AA codes used" << rundata->nonstandardCodesUsed
+            << "\n";
   };
 
   // Add simple statistics to the HTML file, such as number of reads made,
@@ -149,9 +165,13 @@ public:
                                       100) +
                        " %)");
 
-    WriteHTMLTable(file, "Basic statistics",
+    WriteHTMLTable(htmlFile, "Basic statistics",
                    "Properties of sequences found and not found",
                    std::vector<std::string>{"Property", "Value"}, data);
+
+    WriteTXTTable(txtFile, "Basic statistics",
+                  "Properties of sequences found and not found",
+                  std::vector<std::string>{"Property", "Value"}, data);
   };
 
   // Cumulative counts is a legacy approach to evaluation, included in PuLSE for
@@ -196,7 +216,7 @@ public:
     }
 
     // Write side by side tables.
-    Write2HTMLTables(file, "Cumulative counts",
+    Write2HTMLTables(htmlFile, "Cumulative counts",
                      "The number of sequences (count) seen N times. Cumulative "
                      "count gives sequences seen at least N times.  N of 1 to "
                      "50 shown, then only when sequence found N times up to "
@@ -207,8 +227,19 @@ public:
                      {"Prot Occurances (N)", "Count", "Cumulative count",
                       "Cumulative count %"},
                      data2);
-  };
 
+    // Write 2 text tables
+    WriteTXTTable(txtFile, "DNA cumulative counts",
+                  "The number of DNA sequences (count) seen N times.",
+                  {"DNA Occurances (N)", "Count", "Cumulative count",
+                   "Cumulative count %"},
+                  data1);
+    WriteTXTTable(txtFile, "Protein cumulative counts",
+                  "The number of Prot sequences (count) seen N times.",
+                  {"Prot Occurances (N)", "Count", "Cumulative count",
+                   "Cumulative count %"},
+                  data2);
+  };
   // Write tables of the most commonly occuring DNA + protein sequences.
   void WriteCommonOccurances() {
     std::vector<std::vector<std::string>> data1, data2;
@@ -221,21 +252,32 @@ public:
                      std::get<0>(rundata->commonprot[i]));
     }
 
-    Write2HTMLTables(file, "Most common sequences",
+    Write2HTMLTables(htmlFile, "Most common sequences",
                      "Counts of the top 100 occuring DNA and protein sequences",
                      {"DNA sequence", "Count"}, data1,
                      {"Protein sequence", "Count"}, data2);
+
+    WriteTXTTable(txtFile, "Most common DNA sequences",
+                  "Counts of the top 100 occuring DNA sequences",
+                  {"DNA sequence", "Count"}, data1);
+    WriteTXTTable(txtFile, "Most common Protein sequences",
+                  "Counts of the top 100 occuring Protein sequences",
+                  {"Prot sequence", "Count"}, data2);
   };
 
-  // Write colour coded heatmaps providing at-a-glance evaluation of positional
-  // base/residue enrichement.
+  // Write colour coded heatmaps providing at-a-glance evaluation of
+  // positional base/residue enrichement.
   void WriteHeatMaps() {
     std::vector<std::string> headings{"Residue"};
     for (unsigned i = 1; i <= rundata->dnalength / 3; ++i) {
       headings.push_back("Position #" + std::to_string(i));
     }
     WriteHTMLTable(
-        file, "Protein residue counts",
+        htmlFile, "Protein residue counts",
+        "Occurance counts of each AA resdue at every library position",
+        headings, rundata->protheatmap);
+    WriteTXTTable(
+        txtFile, "Protein residue counts",
         "Occurance counts of each AA resdue at every library position",
         headings, rundata->protheatmap);
 
@@ -244,10 +286,13 @@ public:
       headings.push_back("Position #" + std::to_string(i));
     }
     WriteHTMLTable(
-        file, "DNA base counts",
+        htmlFile, "DNA base counts",
         "Occurance counts of each DNA base at every library position", headings,
         rundata->dnaheatmap);
 
+    WriteTXTTable(txtFile, "DNA base counts",
+                  "Occurance counts of each DNA base at every library position",
+                  headings, rundata->dnaheatmap);
     auto getResidueOccurance = [&rd = rundata](const char &c) {
       unsigned nTimesFound = 0;
       for (auto &&i : rd->tripletToAAMap) {
@@ -279,10 +324,14 @@ public:
       headings.push_back("Position #" + std::to_string(i));
     }
     WriteNormalisedHTMLTable(
-        file, "Normalised protein residue heatmap",
+        htmlFile, "Normalised protein residue heatmap",
         "Enrichment over expected occurance of each AA resdue at "
         "every library position",
         headings, normalisedProtHeatmap);
+    WriteTXTTable(txtFile, "Normalised protein residue heatmap",
+                  "Enrichment over expected occurance of each AA resdue at "
+                  "every library position",
+                  headings, normalisedProtHeatmap);
 
     auto normalisedDNAHeatmap = rundata->dnaheatmap;
 
@@ -297,33 +346,39 @@ public:
       headings.push_back("Position #" + std::to_string(i));
     }
     WriteNormalisedHTMLTable(
-        file, "Normalised DNA base heatmap",
+        htmlFile, "Normalised DNA base heatmap",
         "Enrichment over expected occurance of each base at every "
         "library position",
         headings, normalisedDNAHeatmap);
+    WriteTXTTable(txtFile, "Normalised DNA base heatmap",
+                  "Enrichment over expected occurance of each base at every "
+                  "library position",
+                  headings, normalisedDNAHeatmap);
   };
 
-  ~PuLSEHTMLWriter() {
-    file << "</body></html>\n";
-    file.close();
+  ~PuLSEWriter() {
+    htmlFile << "</body></html>\n";
+    htmlFile.close();
+    txtFile.close();
   };
 
 private:
-  // Add row to table data vector.  Vector of vectors - this handles 2 columns.
+  // Add row to table data vector.  Vector of vectors - this handles 2
+  // columns.
   void insertTableRow(std::vector<std::vector<std::string>> &vec,
                       const std::string &in1, const std::string &in2) {
     vec.push_back(std::vector<std::string>{in1, in2});
   };
 
-  // Templated add row to table data vector.  Vector of vectors - this handles 2
-  // columns.
+  // Templated add row to table data vector.  Vector of vectors - this
+  // handles 2 columns.
   template <typename T>
   void insertTableRow(std::vector<std::vector<std::string>> &vec,
                       const std::string &in1, const T &in2) {
     vec.push_back(std::vector<std::string>{in1, std::to_string(in2)});
   };
-  // Templated add row to table data vector.  Vector of vectors - this handles 4
-  // columns.
+  // Templated add row to table data vector.  Vector of vectors - this
+  // handles 4 columns.
   template <typename T1, typename T2, typename T3, typename T4>
   void insertTableRow(std::vector<std::vector<std::string>> &vec, const T1 &in1,
                       const T2 &in2, const T3 &in3, const T4 &in4) {
@@ -332,8 +387,8 @@ private:
                                  std::to_string(in3), std::to_string(in4)});
   };
 
-  // Templated add row to table data vector.  Vector of vectors - this handles 3
-  // columns.
+  // Templated add row to table data vector.  Vector of vectors - this
+  // handles 3 columns.
   template <typename T1, typename T2, typename T3>
   void insertTableRow(std::vector<std::vector<std::string>> &vec, const T1 &in1,
                       const T2 &in2, const T3 &in3, const std::string &in4) {
@@ -341,14 +396,16 @@ private:
         std::to_string(in1), std::to_string(in2), std::to_string(in3), in4});
   };
 
-  // Add row to table data vector.  Vector of vectors - this handles 4 columns.
+  // Add row to table data vector.  Vector of vectors - this handles 4
+  // columns.
   void insertTableRow(std::vector<std::vector<std::string>> &vec,
                       const std::string &in1, const std::string &in2,
                       const std::string &in3, const std::string &in4) {
     vec.push_back(std::vector<std::string>{in1, in2, in3, in4});
   };
 
-  // Write the HTML for a simple table, with headings and data as arguments
+  // Write the HTML for a simple table, with headings and data as
+  // arguments
   void WriteHTMLTable(std::ofstream &out, const std::string &title,
                       const std::string &subtitle,
                       const std::vector<std::string> &headings,
@@ -376,9 +433,9 @@ private:
     out << "</tbody></table></div>";
   };
 
-  // Write the HTML for a normalised data table.  Like a simple table, but
-  // entities are colour coded depending on their value > or < 1 (the expected
-  // rate of inclusion).
+  // Write the HTML for a normalised data table.  Like a simple table,
+  // but entities are colour coded depending on their value > or < 1
+  // (the expected rate of inclusion).
   void
   WriteNormalisedHTMLTable(std::ofstream &out, const std::string &title,
                            const std::string &subtitle,
@@ -446,7 +503,7 @@ private:
       std::transform(retval.begin(), retval.end(), retval.begin(), toupper);
       return retval;
     };
-	//Output the table
+    // Output the table
     out << "<div class = \"container\">"
            "<h2>"
         << title
@@ -470,7 +527,7 @@ private:
     out << "</tbody></table></div>";
   };
 
-  //Like writetables, but outputs two side-by-side tables.
+  // Like writetables, but outputs two side-by-side tables.
   void Write2HTMLTables(std::ofstream &out, const std::string &title,
                         const std::string &subtitle,
                         const std::vector<std::string> &headings1,
@@ -497,7 +554,8 @@ private:
     }
     out << "</tbody></table></div></div>"
 
-        << "<div class = \"col-xs-6\"><div class=\"table-responsive\"><table "
+        << "<div class = \"col-xs-6\"><div "
+           "class=\"table-responsive\"><table "
            "class = \"table table-bordered\">"
            "<thead><tr>";
     for (auto &&i : headings2) {
@@ -513,5 +571,23 @@ private:
     }
     out << "</tbody></table></div></div>"
            "</div>";
+  };
+
+  void WriteTXTTable(std::ofstream &out, const std::string &title,
+                     const std::string &subtitle,
+                     const std::vector<std::string> &headings,
+                     const std::vector<std::vector<std::string>> &data) {
+    out << title << "\n" << subtitle << "\n";
+    for (auto &&i : headings) {
+      out << i << "\t";
+    }
+
+    for (auto &&i : data) {
+      out << "\n";
+      for (auto &&j : i) {
+        out << j << "\t";
+      }
+    }
+    out << "\n\n";
   };
 };

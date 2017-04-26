@@ -3,6 +3,8 @@ pulse
 pulse-test
 sample-pulse-5merCyclic-CGTTGCXXXXXXXXXXXXXXXTGTGCT.fastq
 sample-pulse-5merCyclic-CGTTGCXXXXXXXXXXXXXXXTGTGCT.html
+sample-pulse-5merCyclic-CGTTGCXXXXXXXXXXXXXXXTGTGCT.txt
+
 Makefile
 autom4te.cache/*
 config.status
