@@ -1,6 +1,7 @@
 pulse
 !binaries/ubuntu-16.04-64-bit/pulse
 pulse-test
+pulse-BuildFakeDataset
 sample-pulse-5merCyclic-CGTTGCXXXXXXXXXXXXXXXTGTGCT.fastq
 sample-pulse-5merCyclic-CGTTGCXXXXXXXXXXXXXXXTGTGCT.html
 sample-pulse-5merCyclic-CGTTGCXXXXXXXXXXXXXXXTGTGCT.txt
