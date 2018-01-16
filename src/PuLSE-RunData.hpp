@@ -46,7 +46,7 @@ public:
   std::string fastaFilename;
   std::string libraryDefinition;
   std::string nonstandardCodesUsed = "";
-  unsigned dnalength;
+  unsigned randomDNALength;
   unsigned numReads;
   std::string sequenceBeginMarker, sequenceEndMarker;
   std::unordered_map<std::string, unsigned> map_proteinSequences;
@@ -61,6 +61,12 @@ public:
   unsigned protmaxoccurances = 0;
   using seenCount = unsigned int;
   using seenCountCumulative = unsigned int;
+
+  std::vector<std::vector<char>> validBases;
+  std::vector<std::unordered_map<char, float>> protExpectedRates;
+  std::vector<std::unordered_map<char, float>> dnaExpectedRates;
+  std::string randomStretchDefinition;
+
   std::vector<unsigned int> nTimesProtSeen, nTimesDNASeen,
       nTimesProtSeenCumulative, nTimesDNASeenCumulative;
 
@@ -107,15 +113,116 @@ public:
     // Ensure library definition is uppercase
     std::transform(libraryDefinition.begin(), libraryDefinition.end(),
                    libraryDefinition.begin(), toupper);
-    dnalength =
-        std::count(libraryDefinition.begin(), libraryDefinition.end(), 'X');
-    sequenceBeginMarker = std::string(
-        libraryDefinition.begin(),
-        std::find(libraryDefinition.begin(), libraryDefinition.end(), 'X'));
-    sequenceEndMarker = std::string(libraryDefinition.begin() +
-                                        libraryDefinition.find_last_of("X") + 1,
-                                    libraryDefinition.end());
-  };
+
+    auto rndBegin = libraryDefinition.begin();
+    while (*rndBegin != 'N' && *rndBegin != 'K' && *rndBegin != 'X') {
+      ++rndBegin;
+    }
+
+    auto rndEnd = libraryDefinition.end() - 1;
+    while (*rndEnd != 'N' && *rndEnd != 'K' && *rndEnd != 'X') {
+      --rndEnd;
+    }
+    ++rndEnd;
+
+    sequenceBeginMarker = std::string(libraryDefinition.begin(), rndBegin);
+    sequenceEndMarker = std::string(rndEnd, libraryDefinition.end());
+    randomStretchDefinition = std::string(rndBegin, rndEnd);
+    randomDNALength = randomStretchDefinition.length();
+    std::cout << randomStretchDefinition << "," << randomDNALength << "\n";
+
+    for (const auto &i : randomStretchDefinition) {
+
+      if (i == 'X') {
+        validBases.push_back({'A', 'C', 'T', 'G'});
+        dnaExpectedRates.push_back(std::unordered_map<char, float>{
+            std::make_pair('A', 0.25), std::make_pair('T', 0.25),
+            std::make_pair('C', 0.25), std::make_pair('G', 0.25)});
+        continue;
+      }
+      if (i == 'N') {
+        validBases.push_back({'A', 'C', 'T', 'G'});
+        dnaExpectedRates.push_back(std::unordered_map<char, float>{
+            std::make_pair('A', 0.25), std::make_pair('T', 0.25),
+            std::make_pair('C', 0.25), std::make_pair('G', 0.25)});
+        continue;
+      }
+      if (i == 'K') {
+        validBases.push_back({'T', 'G'});
+        dnaExpectedRates.push_back(std::unordered_map<char, float>{
+            std::make_pair('A', 0), std::make_pair('T', 0.5),
+            std::make_pair('C', 0), std::make_pair('G', 0.5)});
+        continue;
+      }
+      if (i == 'A') {
+        validBases.push_back({'A'});
+        dnaExpectedRates.push_back(std::unordered_map<char, float>{
+            std::make_pair('A', 1.0), std::make_pair('T', 0),
+            std::make_pair('C', 0), std::make_pair('G', 0)});
+        continue;
+      }
+      if (i == 'T') {
+        validBases.push_back({'T'});
+        dnaExpectedRates.push_back(std::unordered_map<char, float>{
+            std::make_pair('A', 0), std::make_pair('T', 1),
+            std::make_pair('C', 0), std::make_pair('G', 0)});
+        continue;
+      }
+      if (i == 'C') {
+        validBases.push_back({'C'});
+        dnaExpectedRates.push_back(std::unordered_map<char, float>{
+            std::make_pair('A', 0.0), std::make_pair('T', 0),
+            std::make_pair('C', 1), std::make_pair('G', 0)});
+        continue;
+      }
+      if (i == 'G') {
+        validBases.push_back({'G'});
+        dnaExpectedRates.push_back(std::unordered_map<char, float>{
+            std::make_pair('A', 0), std::make_pair('T', 0),
+            std::make_pair('C', 0), std::make_pair('G', 1)});
+        continue;
+      }
+    }
+
+    // Now populate the protExpectedRates
+    {
+      // Populate std::vector<std::unordered_map<std::string, float>>
+      // protExpectedRates based on
+      //  std::vector<std::vector<char>> validBases;
+      // and std::unordered_map<std::string, char> tripletToAAMap
+      std::string triplet = "";
+      std::unordered_map<char, float> blankmap;
+      for (auto &&i : residues) {
+        blankmap[i] = 0.0;
+      }
+      for (unsigned i = 0; i < randomDNALength; i += 3) {
+        protExpectedRates.push_back(blankmap);
+        for (auto &&i1 : validBases[i]) {
+          for (auto &&i2 : validBases[i + 1]) {
+            for (auto &&i3 : validBases[i + 2]) {
+              triplet =
+                  std::string(1, i1) + std::string(1, i2) + std::string(1, i3);
+              for (auto &&i : triplet) {
+                if (i == 'T')
+                  i = 'U';
+              }
+
+              protExpectedRates.back()[tripletToAAMap[triplet]] += 1;
+            }
+          }
+        }
+        // Now normalise validResidues.back;
+        float total = 0;
+
+        for (auto &&freq : protExpectedRates.back()) {
+          total += freq.second;
+        }
+        for (auto &&freq : protExpectedRates.back()) {
+          freq.second /= total;
+        }
+      }
+    }
+  }
 
   // Alter the tripletToAAMap, which converts DNA triplets into protein AA
   // residue characters.  Using this, expression systems with nonsense
@@ -141,8 +248,9 @@ public:
   void ReadSequences() {
     std::string protsequence;
     unsigned ntimesfound;
-    // Lambda to insert prot into map (if it does not already exist), otherwise,
-    // increment the occurance count
+
+    // Lambda to insert prot into map (if it does not already exist),
+    // otherwise, increment the occurance count
     auto insertIntoProtMap = [&]() {
       auto index = map_proteinSequences.find(protsequence);
       if (index == map_proteinSequences.end()) {
@@ -155,7 +263,7 @@ public:
     // Collect DNA reads in a map (DNA sequence --> count)
     map_DNASequences =
         ReadPhageLibraryQC(fastaFilename, sequenceBeginMarker,
-                           sequenceEndMarker, dnalength, numReads);
+                           sequenceEndMarker, randomDNALength, numReads);
 
     // Map DNA sequences to protein sequences map
     for (auto &&i : map_DNASequences) {
@@ -181,9 +289,9 @@ public:
 
   // Populate simple count statistics
   void PopulateBasicStats() {
-    nProtMax = static_cast<int>((std::pow(20, (dnalength / 3))));
+    nProtMax = static_cast<int>((std::pow(20, (randomDNALength / 3))));
     nProtNotFound = nProtMax - map_proteinSequences.size();
-    nDNAMax = static_cast<int>(std::pow(4, dnalength));
+    nDNAMax = static_cast<int>(std::pow(4, randomDNALength));
     nDNANotFound = nDNAMax - map_DNASequences.size();
   };
 
@@ -245,9 +353,9 @@ public:
   // Make heatmaps
   void PopulateHeatmaps() {
     std::vector<std::unordered_map<char, unsigned int>> tmp_protmap(
-        dnalength / 3, std::unordered_map<char, unsigned int>());
+        randomDNALength / 3, std::unordered_map<char, unsigned int>());
     std::vector<std::unordered_map<char, unsigned int>> tmp_dnamap(
-        dnalength, std::unordered_map<char, unsigned int>());
+        randomDNALength, std::unordered_map<char, unsigned int>());
 
     // Initialise temp maps to zero
     for (auto &&phm : tmp_protmap) {
@@ -263,22 +371,28 @@ public:
 
     // Count chars in appropriate positions
     for (auto &&i : map_proteinSequences) {
-      for (unsigned aa = 0; aa < dnalength / 3; ++aa) {
+      for (unsigned aa = 0; aa < randomDNALength / 3; ++aa) {
         tmp_protmap[aa][i.first[aa]] += i.second;
       }
     }
     for (auto &&i : map_DNASequences) {
-      for (unsigned aa = 0; aa < dnalength; ++aa) {
+      for (unsigned aa = 0; aa < randomDNALength; ++aa) {
         tmp_dnamap[aa][i.first[aa]] += i.second;
       }
     }
+
+    /* for (unsigned i = 0; i < randomStretchDefinition.length(); ++i) {
+       for (auto &&i : tmp_protmap[i]) {
+         i.second *=
+       }
+     }*/
 
     // Populate heatmap vectors
     protheatmap = std::vector<std::vector<std::string>>(
         residues.length(), std::vector<std::string>());
     for (unsigned i = 0; i < residues.length(); ++i) {
       protheatmap[i].push_back(std::string(1, residues[i]));
-      for (unsigned j = 0; j < dnalength / 3; ++j) {
+      for (unsigned j = 0; j < randomDNALength / 3; ++j) {
         protheatmap[i].push_back(
             std::to_string(tmp_protmap[j][residues.at(i)]));
       }
@@ -287,15 +401,15 @@ public:
         bases.length(), std::vector<std::string>());
     for (unsigned i = 0; i < bases.length(); ++i) {
       dnaheatmap[i].push_back(std::string(1, bases[i]));
-      for (unsigned j = 0; j < dnalength; ++j) {
+      for (unsigned j = 0; j < randomDNALength; ++j) {
         dnaheatmap[i].push_back(std::to_string(tmp_dnamap[j][bases.at(i)]));
       }
     }
   };
 
 private:
-  // Read fastq library file containing reads and populate a map containing DNA
-  // sequences and occurances
+  // Read fastq library file containing reads and populate a map containing
+  // DNA sequences and occurances
   std::unordered_map<std::string, unsigned int>
   ReadPhageLibraryQC(const std::string &fastaFilename,
                      const std::string &beginMarker,
@@ -326,7 +440,8 @@ private:
 #endif
     std::string sequence;
 
-    // Lambda to insert DNA sequence into map (also containing occurance counts)
+    // Lambda to insert DNA sequence into map (also containing occurance
+    // counts)
     auto insertSequenceIntoMap = [&]() {
       auto index = sequences.find(sequence);
       if (index == sequences.end()) {

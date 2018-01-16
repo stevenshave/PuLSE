@@ -116,7 +116,7 @@ public:
              << rundata->sequenceEndMarker
              << "</td></tr>"
                 "<tr><td>Randomized DNA positions</td><td>"
-             << rundata->dnalength << "</td></tr>"
+             << rundata->randomDNALength << "</td></tr>"
              << "<tr><td>Non-standard AA codes used</td><td>"
              << rundata->nonstandardCodesUsed << "</td></tr>"
              << "</tbody></table>"
@@ -128,7 +128,7 @@ public:
             << "Forward upstream marker" << rundata->sequenceBeginMarker << "\n"
             << "Forward downstream  marker" << rundata->sequenceEndMarker
             << "\n"
-            << "Randomized DNA positions" << rundata->dnalength << "\n"
+            << "Randomized DNA positions" << rundata->randomDNALength << "\n"
             << "Non-standard AA codes used" << rundata->nonstandardCodesUsed
             << "\n";
   };
@@ -269,7 +269,7 @@ public:
   // positional base/residue enrichement.
   void WriteHeatMaps() {
     std::vector<std::string> headings{"Residue"};
-    for (unsigned i = 1; i <= rundata->dnalength / 3; ++i) {
+    for (unsigned i = 1; i <= rundata->randomDNALength / 3; ++i) {
       headings.push_back("Position #" + std::to_string(i));
     }
     WriteHTMLTable(
@@ -282,9 +282,10 @@ public:
         headings, rundata->protheatmap);
 
     headings = {"Residue"};
-    for (unsigned i = 1; i <= rundata->dnalength; ++i) {
+    for (unsigned i = 1; i <= rundata->randomDNALength; ++i) {
       headings.push_back("Position #" + std::to_string(i));
     }
+
     WriteHTMLTable(
         htmlFile, "DNA base counts",
         "Occurance counts of each DNA base at every library position", headings,
@@ -313,14 +314,15 @@ public:
 
     for (auto &&y : normalisedProtHeatmap) {
       for (unsigned x = 1; x < y.size(); ++x) {
+        std::cout << rundata->protExpectedRates[x - 1][y[0][0]] << "\n";
         y[x] = std::to_string(
             std::stoi(y[x]) /
-            (rundata->numReads * (residueExpectedOccurance[y[0][0]] / 64.0)));
+            (rundata->numReads * (rundata->protExpectedRates[x - 1][y[0][0]])));
       }
     }
 
     headings = {"Residue"};
-    for (unsigned i = 1; i <= rundata->dnalength / 3; ++i) {
+    for (unsigned i = 1; i <= rundata->randomDNALength / 3; ++i) {
       headings.push_back("Position #" + std::to_string(i));
     }
     WriteNormalisedHTMLTable(
@@ -334,15 +336,21 @@ public:
                   headings, normalisedProtHeatmap);
 
     auto normalisedDNAHeatmap = rundata->dnaheatmap;
+  
 
     for (auto &&y : normalisedDNAHeatmap) {
       for (unsigned x = 1; x < y.size(); ++x) {
-        y[x] = std::to_string(std::stoi(y[x]) / (rundata->numReads * (0.25)));
+        // y[x] = std::to_string(std::stoi(y[x]) / (rundata->numReads *
+        // (0.25)));
+        y[x] = std::to_string(
+            std::stoi(y[x]) /
+            (rundata->numReads * (rundata->dnaExpectedRates[x - 1][y[0][0]])));
+		if (std::strcmp(y[x].c_str(), "inf") == 0)y[x] = "NA";
       }
     }
 
     headings = {"Residue"};
-    for (unsigned i = 1; i <= rundata->dnalength; ++i) {
+    for (unsigned i = 1; i <= rundata->randomDNALength; ++i) {
       headings.push_back("Position #" + std::to_string(i));
     }
     WriteNormalisedHTMLTable(

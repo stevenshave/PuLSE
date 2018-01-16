@@ -19,8 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{D35DB19A-82B8-4B50-9F8A-F0A0AF8A8B18}</ProjectGuid>
-    <RootNamespace>PuLSEBuildFakeDataset</RootNamespace>
+    <ProjectGuid>{CED94F63-10F4-4718-85CA-7DD8BF3F64F2}</ProjectGuid>
+    <RootNamespace>PuLSESimulateDataset</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -110,7 +110,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="PuLSE-BuildFakeDataset.cpp" />
+    <ClCompile Include="PuLSE-SimulateDataset.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

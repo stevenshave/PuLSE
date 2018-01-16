@@ -1,9 +1,9 @@
-# PuLSE-BuildFakeDataset v1.3
+# PuLSE-SimulateDataset v1.3
 
 ### Testing PuLSE on large datasets
 
 ---
-Testing of the PuLSE program on a range of simulated datasets is facilitated with the PuLSE-BuildFakeDataset program.
+Testing of the PuLSE program on a range of simulated datasets is facilitated with the PuLSE-SimulateDataset program.
 
 Taking as input a base frequency definition string, the program builds sequences based on given occurance probabilities.  For example, a standard DNA base residue can be given a 25% chance of being a A, a 25% chance of being a T, a 25% chance of being a C, and a 25% chance of being a A.  This is encoded as the string
 
@@ -46,7 +46,7 @@ Based on the DNA sequence:
 ACCATCTCTGGTCTGAAACCGGGTGTTGACTACACTATCACCGTATACGCAGTTACCNNKNNKNNKNNKNNKNNKNNKNNKNNKNNKCCGATCTCTATCAACTACCGTACCTCTGCAGGTGGCAGTGGGGGTAGCGG
 
 A fastq file may be generated reflecting the above monobody section with 10 randomised amino acid positions with the following command:
-> ./pulse-BuildFakeDataset CGCAGTTACC,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,CCGATCTCTA 1000000 > simulated-pulse-10merMonobody-CGCAGTTACCXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXCCGATCTCTA.fastq
+> ./pulse-simulateDataset CGCAGTTACC,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,CCGATCTCTA 1000000 > simulated-pulse-10merMonobody-CGCAGTTACCXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXCCGATCTCTA.fastq
 
 It may then be evaluated with PuLSE in the standard way:
 > ./pulse simulated-pulse-10merMonobody-CGCAGTTACCXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXCCGATCTCTA.fastq CGCAGTTACCXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXCCGATCTCTA UAG Q
@@ -58,7 +58,7 @@ Based on the DNA sequence:
 >AGCGCCATGGCGNNKNNKNNKNNKNNKNNKNNKGCTGCAGGTGGC
 
 A fastq file may be generated reflecting the above linear 7-mer library with the following command:
-./pulse-BuildFakeDataset AGCGCCATGGCG,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,GCTGCAGGTGGC 1000000 > simulated-pulse-7merLinear-AGCGCCATGGCGXXXXXXXXXXXXXXXXXXXXXGCTGCAGGTGGC.fastq
+./pulse-simulateDataset AGCGCCATGGCG,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,GCTGCAGGTGGC 1000000 > simulated-pulse-7merLinear-AGCGCCATGGCGXXXXXXXXXXXXXXXXXXXXXGCTGCAGGTGGC.fastq
 
 It may then be evaluated with PuLSE in the standard way:
 
@@ -73,7 +73,7 @@ Based on the DNA sequence:
 
 A fastq file may be generated reflecting the above linear 12-mer library with the following command:
 
-./pulse-BuildFakeDataset AGCGCCATGGCG,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,GCTGCAGGTGGC 1000000 > simulated-pulse-12merLinear-AGCGCCATGGCGXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXGCTGCAGGTGGC.fastq
+./pulse-simulateDataset AGCGCCATGGCG,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0,0.5,0,0.5,GCTGCAGGTGGC 1000000 > simulated-pulse-12merLinear-AGCGCCATGGCGXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXGCTGCAGGTGGC.fastq
 
 It may then be evaluated with PuLSE in the standard way:
 /pulse simulated-pulse-12merLinear-AGCGCCATGGCGXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXGCTGCAGGTGGC.fastq AGCGCCATGGCGXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXGCTGCAGGTGGC UAG Q

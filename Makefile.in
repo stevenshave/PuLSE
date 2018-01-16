@@ -1,18 +1,18 @@
 CXX = @CXX@
 ccopt = @CXXFLAGS@
 
-all: pulse pulse-test pulse-BuildFakeDataset
+all: pulse pulse-test pulse-simulateDataset
 pulse: src/PuLSE.cpp
 	$(CXX) -o $@ $^ $(libs) $(ccopt)
 pulse-test: PuLSE-Test/PuLSE-test.cpp
 	$(CXX) -o $@ $^ $(libs) $(ccopt)
-pulse-BuildFakeDataset: PuLSE-BuildFakeDataset/PuLSE-BuildFakeDataset.cpp
+pulse-simulateDataset: PuLSE-SimulateDataset/PuLSE-SimulateDataset.cpp
 	$(CXX) -o $@ $^ $(libs) $(ccopt)
 
 
 .PHONY: clean
 clean:
-	/bin/rm -f *.o  pulse pulse-test pulse-BuildFakeDataset
+	/bin/rm -f *.o  pulse pulse-test pulse-simulateDataset
 
 .PHONY: install
 install:

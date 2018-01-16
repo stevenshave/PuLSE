@@ -96,7 +96,7 @@ int main(int argc, char **argv) {
   std::cerr << "Library definition:\t\t" << rundata->libraryDefinition << "\n";
   std::cerr << "Upstream marker:\t" << rundata->sequenceBeginMarker << "\n";
   std::cerr << "Downstream marker:\t" << rundata->sequenceEndMarker << "\n";
-  std::cerr << "Randomized DNA positions:\t" << rundata->dnalength << "\n";
+  std::cerr << "Randomized DNA positions:\t" << rundata->randomDNALength << "\n";
 
   // In systems with nonsense surpression, we can supply trailing parameters
   // such as: "UAG Q".  Only if present on the command line are they added
