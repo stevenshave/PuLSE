@@ -1,4 +1,4 @@
-# PuLSE (Phage Library Sequence Evaluation) v1.3
+# PuLSE (Phage Library Sequence Evaluation) v1.4
 
 ### Quality control and quantification of peptide sequences explored by phage display libraries.
 
@@ -31,9 +31,9 @@ Pre compiled binaries accompany the PuLSE distribution package for:
 
 |Platform|32/64 bit|Sha256 sum |
 |---:   |:---|:---|
-|Ubuntu Linux 16.04|64-bit|`ec36d0ad2abfd584a2ab266cd7ae62c0216b28882ac9d2d839a61d254dbb7a1d`|
-|Windows 7|  64-bit|`4ea24e632d0742e8ca738caf9638fafbd68d710704317d498a0761aa37939c2b`|
-|Windows 7|  32-bit|`7b7185469380b771484cdb62966937d08e107f7fdf9252752bd35131be316a25`|
+|Ubuntu Linux 16.04|64-bit|`e8b39ab6247b47da73730ca368209bb990848af72d797a0f82d63a39522450b7`|
+|Windows 7|  64-bit|`deb4a1188a2bc634d9b3ba55051cbc18eb098296ba89eef2aa088d536738e368`|
+|Windows 7|  32-bit|`8bee802465f387726248681c04f4e2b719163831c8c93a20556b529c1936e17e`|
 
 Pre compiled binaries can be found in the 'binaries sub folder'.  NOTE:  Windows binaries require the Visual C++ Redistributable for Visual Studio 2015 to be installed.  [Obtain MSVCP140.DLL - https://www.microsoft.com/en-gb/download/details.aspx?id=48145](https://www.microsoft.com/en-gb/download/details.aspx?id=48145) 
 
@@ -79,8 +79,27 @@ inFile.fastq is the data output from next generation sequencing of the phage lib
 
 #### libraryDefinition
 
-libraryDefinition is a string of characters used by PuLSE to identify flanking DNA bases surrounding the randomised library position.  With both upstream and downstream matches made, the randomised sequence between these markers is considered a library member and included in profiling statistics.  The definition takes the form of first, DNA bases encoding the upstream forward marker, a number of X characters, and finally the downstream forward marker.  The definition is reversed and complimentary bases generated in order to deal with reverse library reads in the NGS data.  The full length of the specified (and reverse, complimentary) upstream marker is always used.  However, in the case of downstream markers, only the first 3 DNA bases are used.  The example data accompanying the PuLSE distribution uses 'CGTTGCXXXXXXXXXXXXXXXTGTGCT' as the library definition, specifying that the randomised sequence of 15 DNA bases (5 amino acids) as being flanked by CGTTGC and TGTGCT.
+libraryDefinition is a string of characters used by PuLSE to identify flanking DNA bases surrounding the randomised library position.  With both upstream and downstream matches made, the randomised sequence between these markers is considered a library member and included in profiling statistics.  The definition takes the form of first, DNA bases encoding the upstream forward marker, the dynamic portion of the library, and finally the downstream forward marker.  The definition is reversed and complimentary bases generated in order to deal with reverse library reads in the NGS data.  The full length of the specified (and reverse, complimentary) upstream marker is always used.  However, in the case of downstream markers, only the first 3 DNA bases are used.  The example data accompanying the PuLSE distribution uses 'CGTTGCXXXXXXXXXXXXXXXTGTGCT' as the library definition, specifying that the randomised sequence of 15 DNA bases denoted by 'X' (5 amino acids) as being flanked by CGTTGC and TGTGCT.  PuLSE fully supports the use of IUPAC nucleotide codes as follows:
 
+|IUPAC nucleotide code	| Base | 
+|---:   |:---|
+|A|Adenine|
+|C|Cytosine|
+|G|Guanine|
+|T|Thymine|
+|R|A or G|
+|Y|C or T|
+|S|G or C|
+|W|A or T|
+|K|G or T|
+|M|A or C|
+|B|C or G or T|
+|D|A or G or T|
+|H|A or C or T|
+|V|A or C or G|
+|N|any base|
+
+Note that in addition to the above nucleotide codes, X may be used, and is equivalent to 'N' (any base). 
 #### [triplet residue]  (Optional parameter)
 
 This optional parameter allows PuLSE to operate on non-standard DNA triplet to amino acid mappings.  By default, PuLSE uses the following mapping of DNA triplets to amino acid residue single letter codes:

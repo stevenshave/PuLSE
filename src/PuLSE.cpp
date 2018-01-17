@@ -1,5 +1,5 @@
 /*
-PuLSE version 1.2
+PuLSE version 1.4
 Copyright(c) 2017 Steven Shave
 
 Distributed under the MIT license
@@ -39,7 +39,7 @@ SOFTWARE.
 #include <vector>
 
 // Version number
-constexpr char PuLSEVersion[] = "1.3";
+constexpr char PuLSEVersion[] = "1.4";
 
 // 2 different usages, depending on platform (linux has the ability to read gz
 // compressed input files)

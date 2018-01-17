@@ -1,5 +1,5 @@
 /*
-PuLSE version 1.2
+PuLSE version 1.4
 Copyright(c) 2017 Steven Shave
 
 Distributed under the MIT license
@@ -115,12 +115,18 @@ public:
                    libraryDefinition.begin(), toupper);
 
     auto rndBegin = libraryDefinition.begin();
-    while (*rndBegin != 'N' && *rndBegin != 'K' && *rndBegin != 'X') {
+    while (*rndBegin != 'N' && *rndBegin != 'K' && *rndBegin != 'X' &&
+           *rndBegin != 'R' && *rndBegin != 'Y' && *rndBegin != 'S' &&
+           *rndBegin != 'W' && *rndBegin != 'M' && *rndBegin != 'B' &&
+           *rndBegin != 'D' && *rndBegin != 'H' && *rndBegin != 'V') {
       ++rndBegin;
     }
 
     auto rndEnd = libraryDefinition.end() - 1;
-    while (*rndEnd != 'N' && *rndEnd != 'K' && *rndEnd != 'X') {
+    while (*rndEnd != 'N' && *rndEnd != 'K' && *rndEnd != 'X' &&
+           *rndEnd != 'R' && *rndEnd != 'Y' && *rndEnd != 'S' &&
+           *rndEnd != 'W' && *rndEnd != 'M' && *rndEnd != 'B' &&
+           *rndEnd != 'D' && *rndEnd != 'H' && *rndEnd != 'V') {
       --rndEnd;
     }
     ++rndEnd;
@@ -129,7 +135,6 @@ public:
     sequenceEndMarker = std::string(rndEnd, libraryDefinition.end());
     randomStretchDefinition = std::string(rndBegin, rndEnd);
     randomDNALength = randomStretchDefinition.length();
-    std::cout << randomStretchDefinition << "," << randomDNALength << "\n";
 
     for (const auto &i : randomStretchDefinition) {
 
@@ -180,6 +185,70 @@ public:
         dnaExpectedRates.push_back(std::unordered_map<char, float>{
             std::make_pair('A', 0), std::make_pair('T', 0),
             std::make_pair('C', 0), std::make_pair('G', 1)});
+        continue;
+      }
+
+      if (i == 'R') {
+        validBases.push_back({'G', 'A'});
+        dnaExpectedRates.push_back(std::unordered_map<char, float>{
+            std::make_pair('A', 0.5), std::make_pair('T', 0),
+            std::make_pair('C', 0), std::make_pair('G', 0.5)});
+        continue;
+      }
+      if (i == 'Y') {
+        validBases.push_back({'C', 'T'});
+        dnaExpectedRates.push_back(std::unordered_map<char, float>{
+            std::make_pair('A', 0), std::make_pair('T', 0.5),
+            std::make_pair('C', 0.5), std::make_pair('G', 0)});
+        continue;
+      }
+      if (i == 'S') {
+        validBases.push_back({'G', 'C'});
+        dnaExpectedRates.push_back(std::unordered_map<char, float>{
+            std::make_pair('A', 0), std::make_pair('T', 0),
+            std::make_pair('C', 0.5), std::make_pair('G', 0.5)});
+        continue;
+      }
+      if (i == 'W') {
+        validBases.push_back({'A', 'T'});
+        dnaExpectedRates.push_back(std::unordered_map<char, float>{
+            std::make_pair('A', 0.5), std::make_pair('T', 0.5),
+            std::make_pair('C', 0), std::make_pair('G', 0)});
+        continue;
+      }
+      if (i == 'M') {
+        validBases.push_back({'A', 'C'});
+        dnaExpectedRates.push_back(std::unordered_map<char, float>{
+            std::make_pair('A', 0.5), std::make_pair('T', 0),
+            std::make_pair('C', 0.5), std::make_pair('G', 0)});
+        continue;
+      }
+      if (i == 'B') {
+        validBases.push_back({'C', 'G', 'T'});
+        dnaExpectedRates.push_back(std::unordered_map<char, float>{
+            std::make_pair('A', 0), std::make_pair('T', 0.333333),
+            std::make_pair('C', 0.333333), std::make_pair('G', 0.333333)});
+        continue;
+      }
+      if (i == 'D') {
+        validBases.push_back({'A', 'T', 'G'});
+        dnaExpectedRates.push_back(std::unordered_map<char, float>{
+            std::make_pair('A', 0.333333), std::make_pair('T', 0.333333),
+            std::make_pair('C', 0), std::make_pair('G', 0.333333)});
+        continue;
+      }
+      if (i == 'H') {
+        validBases.push_back({'A', 'C', 'T'});
+        dnaExpectedRates.push_back(std::unordered_map<char, float>{
+            std::make_pair('A', 0.333333), std::make_pair('T', 0.333333),
+            std::make_pair('C', 0.333333), std::make_pair('G', 0)});
+        continue;
+      }
+      if (i == 'V') {
+        validBases.push_back({'A', 'C', 'G'});
+        dnaExpectedRates.push_back(std::unordered_map<char, float>{
+            std::make_pair('A', 0.333333), std::make_pair('T', 0),
+            std::make_pair('C', 0.333333), std::make_pair('G', 0.333333)});
         continue;
       }
     }

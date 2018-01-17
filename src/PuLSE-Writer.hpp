@@ -1,5 +1,5 @@
 /*
-PuLSE version 1.2
+PuLSE version 1.4
 Copyright(c) 2017 Steven Shave
 
 Distributed under the MIT license
@@ -314,7 +314,7 @@ public:
 
     for (auto &&y : normalisedProtHeatmap) {
       for (unsigned x = 1; x < y.size(); ++x) {
-        std::cout << rundata->protExpectedRates[x - 1][y[0][0]] << "\n";
+        
         y[x] = std::to_string(
             std::stoi(y[x]) /
             (rundata->numReads * (rundata->protExpectedRates[x - 1][y[0][0]])));
