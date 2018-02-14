@@ -326,11 +326,11 @@ public:
       headings.push_back("Position #" + std::to_string(i));
     }
     WriteNormalisedHTMLTable(
-        htmlFile, "Normalised protein residue heatmap",
+        htmlFile, "Normalized protein residue heatmap",
         "Enrichment over expected occurance of each AA resdue at "
         "every library position",
         headings, normalisedProtHeatmap);
-    WriteTXTTable(txtFile, "Normalised protein residue heatmap",
+    WriteTXTTable(txtFile, "Normalized protein residue heatmap",
                   "Enrichment over expected occurance of each AA resdue at "
                   "every library position",
                   headings, normalisedProtHeatmap);
@@ -354,11 +354,11 @@ public:
       headings.push_back("Position #" + std::to_string(i));
     }
     WriteNormalisedHTMLTable(
-        htmlFile, "Normalised DNA base heatmap",
+        htmlFile, "Normalized DNA base heatmap",
         "Enrichment over expected occurance of each base at every "
         "library position",
         headings, normalisedDNAHeatmap);
-    WriteTXTTable(txtFile, "Normalised DNA base heatmap",
+    WriteTXTTable(txtFile, "Normalized DNA base heatmap",
                   "Enrichment over expected occurance of each base at every "
                   "library position",
                   headings, normalisedDNAHeatmap);
